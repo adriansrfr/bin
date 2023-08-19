@@ -1,0 +1,113 @@
+#!/bin/bash
+
+
+function savebravetabstpcsv
+{
+
+
+
+# Get the PID of the Brave process
+brave_windows=$(pgrep -x brave)
+
+#brave_windows=$(xdotool search --class brave)
+
+#echo "URL" > ~/temp/brave_urls.csv
+
+# Loop through each window
+for window in $brave_windows; do
+  # Get the URL of the current window
+  url=$(xdotool getwindowname $window)
+
+  # Write the URL to the CSV file
+  echo $url >> ~/temp/brave_urls.csv
+done
+
+
+
+}
+
+
+
+
+
+function getbook
+{
+
+  if [ ! "$#" -gt 0 ]; then read -p "Enter a word to search the web for pdf or epub: " varWord; fi ;
+  if [ ! "$#" -eq 0 ]; then varWord="$1"; fi
+
+  echo "Processing "$varWord""
+
+  brave-browser "https://www.google.com/search?q=-inurl:htm -inurl:html -inurl:php intitle:'index of' (pdf|epub)    \"$varWord\""
+
+
+}
+
+
+function getaudio
+{
+
+  if [ ! "$#" -gt 0 ]; then read -p "Enter a word to search the web for audio: " varWord; fi ;
+  if [ ! "$#" -eq 0 ]; then varWord="$1"; fi
+
+  echo "Processing "$varWord""
+
+  brave-browser "https://www.google.com/search?q=-inurl:htm -inurl:html -inurl:php intitle:'index of' (mp3|mp4|wav)    \"$varWord\""
+
+
+}
+
+# cp /home/adrian/.config/BraveSoftware/Brave-Browser/Default/Bookmarks /home/Documents
+
+function gethistory
+{
+ cp "/home/adrian/.config/BraveSoftware/Brave-Browser/Default/History" "Documents" 
+
+  cd ~/Documents;
+
+   sqlite3  <<EOS
+.open History
+.mode columns
+.width 80 80 -4
+.header on
+SELECT
+      url, title,visit_count
+FROM
+      urls
+ORDER BY
+    visit_count DESC limit 25;
+      ;
+EOS
+#sqlite3 History  "select url, title,visit_count from urls order by visit_count DESC limit 10";
+}
+
+function getrecenthistory
+{
+ cp -f "/home/adrian/.config/BraveSoftware/Brave-Browser/Default/History" "Documents" 
+
+  cd ~/Documents;
+
+   sqlite3  <<EOS
+.open History
+.mode columns
+.width 80 80 40
+.header on
+SELECT
+      url, title,datetime((last_visit_time/1000000)-11644473600, 'unixepoch', 'localtime') AS last_visit_time
+FROM
+      urls
+ORDER BY
+  last_visit_time ASC;
+limit 100
+      ;
+EOS
+}
+
+function backupbrave
+{
+if [ ! -d ~/Documents/BraveBackup ]; then
+  mkdir -p ~/Documents/BraveBackup;
+fi
+cp -f "/home/adrian/.config/BraveSoftware/Brave-Browser/Default/History" "Documents/BraveBackup"
+cp -f "/home/adrian/.config/BraveSoftware/Brave-Browser/Default/Bookmarks" "Documents/BraveBackup"
+}

@@ -1,0 +1,20 @@
+#!/bin/bash
+
+function getrouterip
+{
+ netstat -r -n | awk '{print $2}' | head -n 3 | tail -n 2 ;
+}
+
+function getrouter
+{
+ routerip=$(getrouterip | tail -n 1 );
+ xdg-open http://$routerip/ </dev/null &>/dev/null &
+
+ echo $routerip
+}
+
+function getip
+{
+ echo IP Address
+ hostname -I | awk '{print $1}'
+}

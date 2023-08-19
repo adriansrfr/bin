@@ -1,0 +1,86 @@
+#!/bin/bash
+
+function getbios
+{
+  sudo dmidecode -t bios -q;
+}
+
+function getwindowmgr
+{
+  wmctrl -m | grep --color=always Name:;
+}
+
+function getcomputer
+{  neofetch; }
+# cat /etc/os-release;
+# neofetch; consider switching to freshfetch. Also screenfetch is installed.
+# ~/.config/neofetch/config.conf
+function getpath
+{ echo "${PATH//:/$'\n'}"; }
+
+function getprocess
+{ 
+    [ -z "$var" ] && echo "Enter an argument or did you mean getprocesses? " ||
+
+  ps aux | grep -i $1 | grep -v grep; }
+
+function getprocesses
+{
+  btop ;
+}
+
+function getram
+{
+free -h;
+echo "";
+echo Memory intensive processes:;
+echo "";
+ps acxh -o cmd:15,%mem --sort=-%mem | head;
+}
+
+function hibernate
+{
+  #sudo systemctl suspend;
+sudo  pm-suspend;
+}
+
+function getcpu
+{
+  lscpu | egrep 'Model name|Socket|Thread|NUMA|CPU\(s\)';
+}
+
+function getsettings
+{
+  systemsettings </dev/null &>/dev/null &
+}
+
+function update
+{
+echo Updating,upgrading,autoremoving, and cleaning;
+ sudo apt-get update;
+ sudo apt-get upgrade -y;
+ sudo apt-get autoremove;
+ sudo apt-get clean;
+ echo Done!!!
+}
+
+function gethd 
+{
+ # sudo df -h | grep -Eiv '(tmpfs|udev|loop)' 2>/dev/null ;
+ #tee >(head -n 1) >(sleep 0.5;
+ #df -h |  { head -1; grep -Eiv '(tmpfs|udev|loop)';}
+ #> /dev/null; sleep 1.0 ;
+  #df -a -P -h -T | ( read -r head; printf '%s\n' "$head"; grep -Eiv '(-|loop|tmpfs)')
+  lsblk -fl -o NAME,FSTYPE,SIZE,FSAVAIL,FSUSE%,MOUNTPOINT,LABEL | ( read -r head; printf '%s\n' "$head";grep -Eiv '(-|loop|tmpfs)') |
+  awk -F '[ ]' '($4!="") {print}'
+
+}
+
+function getusb
+{
+ # lsblk --help
+ #df -h | ( read -r head; printf '%s\n' "$head"; grep --color=always -i multiboot);
+ lsblk -fl -o NAME,FSTYPE,SIZE,FSAVAIL,FSUSE%,MOUNTPOINT,LABEL | ( read -r head; printf '%s\n' "$head"; grep --color=always -i multiboot) ;
+
+}
+

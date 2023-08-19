@@ -1,0 +1,369 @@
+a2j                    alsa to jack connector
+a2ping                 postscript to anything '(like PDF)'
+a2p                    anything to postscript
+a2ps                   anything to postscript
+abcde                  CD to mp3 ripper
+acidlaunch
+ack                    advanced grep
+advancecomp            recompression utility (better than pngcrush)
+agave                  color scheme picker
+aldo                   morse code tutor
+amsynth                synthesizer (use it with [vkeybd] virtual keyboard through [jack])
+antiword               word viewer
+aosd_cat               display text in an on-screen-display (OSD) -- part of libaosd, an advanced OSD library
+apg                    generate random passwords
+apparix                bookmark directories (and use with "to", "bm", and "portal")
+ardour                 non-linear audio editor
+arecord                record audio from the soundcard
+aria2c                 downloader
+asciinema              asciicast terminal session recorder and viewer
+atool                  Multi-format archive manager
+audacious              music (mp3, mod) player
+audacity               sound editor
+audiotag               id3 tagger
+base64                 better than uuencode
+bashdb                 bash debugger
+bmon                   network bandwidth monitor
+boxes                  draw any kind of boxes around your text
+brasero                cd/dvd burner
+bsdiff                 binary differ
+bspatch                binary patcher
+btail                  a bayesian log filter
+bvi                    binary vi (yet another hex editor)
+cabel                  a graphical, modular synth interface to [csound] that's similar to [pure data]
+calcoo                 calculator
+ccx2                   curses xmms2 client
+ccze                   log file colorizer
+cdecl                  explain C declarations
+cdstatus               rip and recover CDs and DVDs
+cfg-update             like a smarter dispatch-conf
+cg                     USENET binary decoder
+chkrootkit             check rootkit
+chmsee                 chm viewer
+chronicle              Blogger client
+chsuf                  change suffix of file(s)
+clive                  download videos from youtube, etc...
+codeviz                draw call graphs from C source
+colorize               color log files
+cookiecutter           Command-line utility to create projects from cookiecutters (project templates)
+csound                 very flexible audio synthesis/programming system
+csvmidi                convert csv files to midi
+d4x                    downloader
+dash                   small, ash-like shell
+datamash               convert rows to columns, columns to rows, and other text operation swiss army knife
+ddd                    interface for gdb
+demoroniser            convert Microsoft characters to regular ascii
+detex                  a filter to strip TeX commands from a .tex file
+detox                  Safely remove spaces and strange characters from filenames
+devilspie              match windows and take action (like xdotool)
+diffbin                binary diff
+diffuse                diff for X
+discus                 color df
+dispatch.conf          like etc-update (obsoleted by cfg-update)
+djview                 text compression format like PDF (see djvu package)
+dmenu                  convert stdin in to a menu
+dnscache               DJB's caching only DNS server
+doit                   a task management and automation tool
+dosbox                 DOS emulator
+dspspy                 sound activated recorder (obsoleted by listener)
+dunst                  lightweight notification daemon
+dvdisaster             dvd data backup and restore with error correction
+dvipdfmx               dvi to pdf converter
+easytag                GUI id3 tagger
+ecasound               command line audio player, effects adder, and recorder
+EditorConfig           helps developers define and maintain consistent coding styles between different editors and IDEs.
+eix                    search portage (faster than esearch) (update-eix to update database)
+eix-sync               do an "emerge --sync" and an "update-eix"
+emerge-delta-webrsync  like "emerge --sync" but with deltas
+enca                   guess and convert encodings
+enfuse                 poor man's HDR
+enscript               ascii -> postscript
+ent                    test pseudorandom numbers
+esearch                search portage (faster than emerge -s) (eupdatebd to update database) (eix is faster)
+euse                   manipulate and query USE flags
+evtest                 see the events generated in /dev/input/event* devices (part of the games-util/joystick package)
+exiftool               view and modify metadata of various formats (including image formats and PDF)
+exmap                  memory debugger and leak detector
+faad                   AAC decoder
+fasd                   Access/search recently/frequently used files on the command line
+feta
+fftw                   fast fourier transform library
+firefox                web browser
+firejail               Security sandbox for any type of processes
+flagedit               emerge flag editor
+flock                  manage locks from shell scripts
+flux                   library
+fontypython            font previewer
+fotoxx                 image editor
+frobtads               interactive fiction tads interpreter
+frotz                  interactive fiction zcode interpreter
+fulla                  fix lens distortion
+fzf                    command-line fuzzy finder/searcher
+fzf-z                  fuzzy finder/searcher for recently-used directories
+fzy                    command-line fuzzy finder/searcher (better and faster than fzf, and written in C)
+gcm                    GNU clipboard manager
+g-cpan                 Gentoo CPAN emerge
+gema                   macro processor (awk, sed, perl replacement)
+get_flash_videos       Download youtube, vimeo, etc videos.
+gflashplayer           Macromedia Flash Player
+gforth                 forth implementation
+gifsicle               animated gif creation tool
+gimp
+git-subrepo            Git Submodule/Subtree Alternative
+gkrellm
+gkrellm                graphic system monitor
+glances                CLI curses based monitoring tool - like htop + iotop
+glark                  advanced grep
+glulxe                 interactive fiction interpreter that reads glulx blorbs
+gmrun                  run commands from a popup window
+gnochm                 chm viewer
+gnome specimen         font previewer
+gnotime                GTimeTracker - a combination of a stopwatch, a to-do-list manager and time-keeping/billing system
+gozer                  tool for rendering arbitrary text as graphics, using ttfs and styles
+gpicview               image viewer
+grace                  x y plots
+grasp                  development aid
+gs                     ghostscript
+gtk2fontsel            font selector
+gtkpod                 ipod interface
+gtktalog               CD/DVD catalog
+gvd                    gnu visual debugger
+gyach                  Yahoo instant messenger gui?
+hexcurse               curses hex editor
+hexer                  hex editor with a vi interface
+hidden                 show hidden windows
+htop                   enhanced top
+ht                     binary/hex editor and diassembler (aka "hteditor")
+httrack                website mirroring tool
+hydrogen               drum machine
+i3                     tiling window manager
+iconv                  convert text from one character encoding to another (ex: from utf8)
+ifm                    interactive fiction mapper
+iftop                  network use top
+indent                 code beautifier (pretty printer)
+InkScape
+inotail                like tail, but uses the kernel's inotify system to make it faster
+iprint                 output hex/octal of chars on input
+jack-keyboard          a nice virtual keyboard for jack
+joy2chord              chording keyboard app (wirelessdreamer on #linuxice on freenode)
+jpegoptim              JPEG optimizer
+jpilot                 Palm Pilot PIM
+k3b                    cd/dvd burner
+k9copy                 copy DVDs
+katmake                OCAML makefile generator
+kchmviewer             chm viewer
+kcolorchooser          Pick colors (hex)
+kcontrol               KDE configuration (obsoleted by systemsettings)
+kdenlive               non-linear video editor
+kdesu                  run KDE programs with superuser privileges
+kdialog                sort of like xmessage and zenity
+kdiff3                 3-way diff for X
+kedpm                  ked password manager
+key-mon                shows keyboard and mouse activity in a window
+kid3                   bulk id3 tagger
+kile                   LaTeX development environment
+klavaro                typing tutor
+klibido                USENET binary downloader
+kontact                PIM that uses korganizer for its calendar
+korganizer             calendar program
+kpdf                   KDE PDF viewer
+kprof], [gprof         profiling
+kprof, gprof           profiling
+kuickshow              image viewer
+kuroo                  emerge GUI
+l2p                    LaTeX to PNG
+lame                   creates mp3 audio files
+liblame                mp3 creation library
+libplot                plotting
+lilypond               music typesetter (using TeX/LaTeX)
+listener               sound activated recorder (unfortunately, reads directly from /dev/dsp)
+lphelp                 printer info
+lshw                   list hardware configuration
+lxappearance           change X themes, mouse cursors, fonts
+lyx                    desktop publishing system with a LaTeX back end
+lzo
+lzop                   a file compressor very similar to gzip.  lzop favors speed over compression ratio
+maim -s                screen shot util (like scrot)
+makeztxt               create a palm zTXT file from an ascii file
+match_parens           match parenthesis and brackets in LaTeX and other code
+mcurl                  download files in multiple parts via [curl]
+mediainfo              display information about a media file
+memprof                memory debugger and leak detector
+midicsv                convert midi files to csv
+mimms                  play mms files
+mitmproxy              man-in-the-middle http(s) proxy -- great for debugging and reverse-engineering
+mlterm                 terminal that allows the use of proportional fonts
+mktemp                 safely create temporary files and directories
+mmsrip                 download mms streams
+mmv                    safely move/copy/append/link multiple files by wildcard patterns
+mogrify                like convert from the [ImageMagick] tools, but converts in place
+mpage
+mpd                    music player daemon
+mplayer                movie player
+mpv                    movie player (fork of mplayer2)
+msmtp                  SMTP client and plugin
+msort                  sophisticated sort
+mpsyt                  video downloader (mps-youtube)
+musca                  tiling window manager
+muse                   music sequencer
+musescore              musical score editor
+mutool                 work with PDF files (including view and modify PDF metadata)
+mutt                   mail client
+ncc                    debugging and source tracing C compiler (can also draw call graphs)
+ncdu                   ncurses disk usage
+netbrake               bandwidth limiter
+netcdf                 netcdfg3 - array access for manipulating scientific data
+nethogs                another network top
+newsbeuter             RSS reader
+nginx                  web server (fast, low resource use, easy to config)
+ngrep                  network grep
+ninjam                 make music with others over the internet
+nitfol                 interactive fiction zcode interpreter
+nl                     number lines
+notify-send            brings up a dialog box containing a message (like a simple zenity or kdialog)
+ntpq -c pe
+ntpq -c rv
+ntptrace
+num                    number utilities for mathematics (sum, median, quartiles, standard deviation, and much more)
+nyxmms2                command line xmms2 client
+objconv                convert and disassemble object files
+obs                    Record and Stream Live Video Content
+od                     octal dump
+ogle                   dvd player
+okteta                 another nice gui hex editor
+okular                 pdf, ps, ebook, and chm reader
+oopadmin               change default printer and add fonts in OpenOffice
+oprofile               profiler
+optar                  print data on to paper - 2D barcode with error-correction
+p0f                    passive fingerprint tool
+pan                    newsreader (gui)
+par                    reformat paragarphs (like comments)
+patool                 Multi-format archive manager
+pavuk                  web page/site mirroring
+pdfinfo                view PDF metadata
+pdiff                  pretty diff (in postscript) using wdiff
+ped                    sed done right (with perl)
+peek                   Simple animated Gif screen recorder
+perf                   performance monitor
+pfe                    forth implementation (very standard)
+pinfo                  color info viewer
+pipe.vim               pipe to vim and back out again
+ploticus               plotting
+plotutils              plotting
+poster                 split a large poster in to smaller sheets
+postfix                MTA
+psbind                 smarter psnup (resize postscript files to print multiple pages on one sheet of paper) (can crop margins)
+psdim                  optimize nup pages for pstops
+psutil                 get information on running processes and system utilization
+pup                    parse HTML on the command line (like jq for XML)
+pv                     Pipe Viewer: a tool for monitoring the progress of data through a pipe
+pydf                   pretty df (like discus)
+qemu                   emulator
+qmv                    batch rename files using a text editor (from [renameutils])
+qodem                  modem program that can do serial, telnet, ssh, zmodem, kermit, etc
+qt5ct                  qt5 style editor
+qtads                  interactive fiction tads interpreter
+quvi                   Download videos from youtube and lot of other sites
+ranger                 curses file manager (uses vim keys)
+rawstudio              process RAW files
+rdiff-backup           like rsync, for doing incremental backups
+readlink               find the full path of a file
+realpath               find the full path of a file
+recode                 like dos2unix and unix2dos, but with many more encodings
+recordmydesktop        make screencast videos
+regex-markup           logfile colorizer
+remark                 regex-markup (colorize logfiles)
+remind                 reminder service
+reverse proxy grapher  Visualize how external ports are mapped to internal ones
+rkhunter               rootkit hunter
+rlwrap                 run any command with readline editint support
+rosegarden             midi editor and recorder
+rtv                    Reddit Terminal Viewer
+safecopy               data recovery tool (better than dd)
+sam2p                  convert various filetypes (like png) to others (like eps)
+scan-build             static analysis tool (part of clang and llvm)
+sc                     spreadsheet
+scrot -s               screen shot util
+serio                  upload files over the serial port using just echo
+sfmike                 speakfreely - talk
+sfspeaker              speakfreely - listen
+shutter                A feature rich screenshot program
+socat                  socket netcat
+socklog                system and kernel logging services (like metalog)
+soundtracker           tracker
+sox                      audio swiss army knife / utilities
+speakfreely            Voice over IP client
+speedcrunch            calculator
+sponge                 soak up stdin and write to a file (for stuff like set to edit in place)
+squirm                 squid proxy module
+ssh-copy-id              automatically create ~/.ssh/authorized_keys on remote machines
+sux                    su while transferring X credentials (better than xauth)
+swaks                  Swiss Army Knife SMTP; Command line SMTP testing, including TLS and AUTH
+swfdec-player          Macromedia Flash Player (from the swfdec-gnome package)
+swf_play               Macromedia Flash Player
+systemsettings         kde configuration program (replacement for kcontrol)
+tar                    archive files and directories
+taskwarrior            task manager
+testdisk               disk recovery, works directly on block device, using PhotoRec
+TeX4ht                 convert TeX files to other formats
+text2graph.pl          convert text to a graph
+thcrut                 network discovery and fingerprint tool
+tilda                  drop down terminal
+timer_entropyd         populate linux random devices with extra entropy from various timers
+timidity               MIDI player
+trueprint              prettypinter
+ttyrec                 terminal session recorder and viewer
+tunapie                tune in to a Shoutcast stream (like streamtuner)
+unbuffer               flush stdin (from expect)
+uniname                checks for valid UTF-8 characters (use "uniname -V FILENAME")
+urlview                finds URLs in a file or stdin then lets the user select one of the URLs and act on it
+ups                    visual debugger
+upx                    executable compressor
+utimer                 countdown timer and stopwatch
+uudeview               decode uuencoded files and more
+valgrind               memory debugger
+valgrind               memory debugger and leak detector
+VirtualBox             Virtualization
+vlc                    video player
+vym                    mindmapping app
+w3mir                  website mirroring tool
+w3m                    text browser (ala lynx)
+watch                  run a command multiple times and display the output (with differences highlighted)
+Watcher                Run commands based on inotify events (an improved incron)
+wavbreaker             split WAV files
+whatmask               subnet mask calculator (OSX)
+wmctrl                 control windows from shell
+wmsmixer
+wxhexeditor            nice gui hex editor
+wyrd                   frontend for remind
+x11rec                 record animated gifs of activity in X windows
+x86info                CPU diagnostics
+xautomation            Control X from command line and find things on screen (can simulate key pressing)
+xchat                  IRC client
+xchm                   chm viewer
+xdg-open               open URL in $BROWSER
+xdiskusage
+xdotool                simulate key and mouse actions (like devilspie)
+xdvik                  dvi viewer
+Xephyr                 nested X display
+xmlstarlet             parse XML on the command line (like jq for XML)
+xmms2                  music player daemon
+xpp                    GUI printing interface
+xrestop                a top for X programs that shows resource usage
+xsendkeycode           send key events to active window
+xvst                   x video service thief (download videos from youtube, etc)
+xxdiff                 GUI diff
+xxd                    hex dump
+yace                   Yet Another Chess Engine
+yase                   Yet Another Search Engine
+yaydl                  yet another downloader (for youtube, vimeo, etc)
+youtube-dl             Download videos from youtube and lot of other sites
+yq                     parse YAML on the command line (like jq for YAML)
+zargs                  a version of xargs that makes the find command redundant (part of zsh)
+zed                    very small and fast vi-like editor (part of zsh)
+Zenity                 display GTK+ dialogs from shell scripts
+zgrviewer              view and navigate graphviz files (Java app)
+zoom                   interactive fiction zcode interpreter
+zrun                   transparently uncompress bz2 and gz files to a temporary file and run a program on them
+zynaddsubfx            great, complex synth
+zz                     dynamic parser

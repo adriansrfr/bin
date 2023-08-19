@@ -1,0 +1,4 @@
+#!/bin/bash
+
+function troubleshoot 
+{ xdg-open https://www.shellcheck.net/; }

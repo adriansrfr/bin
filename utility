@@ -1,0 +1,195 @@
+#!/bin/bash
+
+function getpowershellmodules
+{
+  cd /home/adrian/.local/share/powershell/Modules
+}
+
+function getweather
+{
+  #rain
+  xdg-open https://www.accuweather.com/en/us/lake-worth/33460/weather-radar/332279 </dev/null &>/dev/null &
+}
+
+function getrain
+{
+
+  xdg-open https://www.windy.com/-Rain-thunder-rain?rain,25.971,-80.045,8,m:eo5adW0 </dev/null &>/dev/null &
+}
+
+function getswell
+{
+xdg-open https://www.windy.com/-Waves-waves?waves,27.452,-78.802,8,m:eo5adW0 </dev/null &>/dev/null &
+}
+
+function startdalai
+{
+  npx dalai serve;
+}
+
+function getvimhelp
+{
+ vim /home/adrian/.vim/plugged/vimwiki/doc/vimwiki.txt;
+}
+
+function dir 
+{
+  powershell -c "get-dir" 
+#for i in ${pwd}; do
+#  echo $i
+  # stat -f "%Sm" -t "%Y-%m-%d %H:%M" "$i"
+#done
+}
+function getvoltaprograms
+{
+ echo Get node, npm, or yarn programs installed with volta;
+ echo Example software removal: volta uninstall terminalgpt;
+ volta list;
+}
+
+function updatenpm
+{
+ # npm install -g npm@latest;
+ echo "Find out latest node version, then replace number with latest version"
+ echo "volta install node@19" 
+}
+
+function getbravefavorites
+{
+  cat ~/.config/BraveSoftware/Brave-Browser/Default/Bookmarks | jq .roots.bookmark_bar.children[] ;
+}
+
+function topten 
+{
+        re='^[0-9]+$' 
+        if ! [[ $1 =~ $re ]] ; then 
+        echo "error: $1 not a number" >&2
+
+#        if [ "$#" -gt 0]; then var=$1; fi;
+#        if [ ! "$#" -eq 0 ]; then var=10; fi;
+
+
+
+  #if [ ! "$#" -gt 0 ]; then read -p "Enter a word to search binaries: " varWord; fi ;
+  #if [ ! "$#" -eq 0 ]; then varWord=$1; fi
+
+         else
+
+  history | awk '{cmd[$2]++} END {for(elem in cmd) {print cmd[elem], elem}}' | sort -n -r | head -n $1;
+        fi
+}
+#function topten () {
+#           history | awk '{a[$2]++} END {for (i in a) print a[i], i}' | sort -rn | head -n $1
+#        fi
+#}
+
+function getdiskspace
+{
+  ncdu;
+}
+
+function gethelp
+{
+  echo howdoi;
+  echo tldr;
+  echo navi '(not installed)';
+  echo diff-so-fancy '(not installed)';
+  echo getshortcuts;
+}
+
+function vpn
+{
+  sudo protonvpn $1;
+}
+
+function getpath
+{
+  echo $PATH | tr ':' '\n'
+}
+
+function getduplicate
+{
+  ls | uniq -i -d
+}
+
+function getinstalledprograms
+{
+    aptitude search '~i!~M' 
+}
+
+function addTimeToYoutube
+{
+#Todo: remove https:// and readd https://
+    # Add catch block for special characters that break the string
+  if [  "$#" -eq 0  ]; then read -p "Enter the link: " link; fi ;
+  if [  "$#" -gt 0 ]; then link="$1"; fi
+
+  if [  "$#" -lt 2 ]; then read -p "Enter the minute: " minute; fi ;
+  if [  "$#" -gt 1 ]; then minute="$2"; fi
+
+  if [  "$#" -lt 3 ]; then read -p "Enter the second: " second; fi ;
+  if [  "$#" -gt 2 ]; then second="$3"; fi
+
+  combined="${link}&t=${minute}m${second}s"
+
+  echo ${combined};
+}
+
+function getdefaultprograms
+{ bat /usr/share/applications/defaults.list; }
+
+function getkeybinding
+{
+echo  C-f: cd_with_fzf;
+echo  C-o: fzopen;
+echo  C-n: nvim;
+echo  C-wi: wiki index;
+echo  C-b: search command modules; 
+echo  C-w: search wiki;
+}
+
+function explorer 
+{ nemo $PWD </dev/null &>/dev/null & }
+
+function sourcebashrc
+{ source ~/.bashrc; }
+
+
+function getbashshortcut 
+{
+  xdg-open https://ss64.com/bash/syntax-keyboard.html
+}
+
+function getfilecabinet 
+{
+  cd /media/adrian/IT_ToolBox/FileCabinet;
+}
+
+function openfilecabinet
+{
+  xdg-open /media/adrian/IT_ToolBox/FileCabinet </dev/null &>/dev/null &
+}
+
+
+# function fzfr
+# {
+#   fzf -m -x | {
+#     xargs -d'\n' -r "$@" &
+#   }
+# }
+# 
+# function fzfpic 
+# {
+#   cd ~/Pictures && fd -t f -H -I | fzf --preview 'sleep 1 > /dev/null 2>&1 & echo {}'  | xargs -r -d "\n" $ 
+# }
+
+function getdiff 
+{
+  diff <($1) <($2);
+}
+
+function getdup
+{
+  $1 | sort | uniq -d ;
+
+}

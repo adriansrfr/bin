@@ -1,0 +1,36 @@
+#!/bin/bash
+
+
+function vimdoc 
+{
+
+  if [ ! "$#" -gt 0 ]; then read -p "Enter word document to open : " varWord; fi ;
+  if [ ! "$#" -eq 0 ]; then varWord=$1; fi
+
+    local odt
+    odt="$(ls -a | grep -i *.odt | grep -i "$varWord")"
+    if [ -z "{$odt}"  ]
+    then
+      echo "$varWord" is not found or not odt! ;
+      return
+    else
+      echo "$varWord" found!
+      pandoc -f odt -t rst "$varWord" | vim - ;
+      return
+        fi
+
+
+    local docx
+    docx="$(ls -a | grep -i *.docx | grep -i "$varWord")"
+    if [ -z "{$docx}"  ]
+    then
+      echo "$varWord" is not found or not docx! ;
+      return
+    else
+
+      echo "$varWord" found!
+      pandoc -f docx -t rst "$varWord" | vim - ;
+      return
+        fi
+
+}

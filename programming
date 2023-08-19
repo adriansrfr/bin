@@ -1,0 +1,24 @@
+#!/bin/bash
+
+
+function makeproject
+{
+
+  if [ ! "$#" -gt 0 ]; then read -p "Enter a project name: " project; fi ;
+  if [ ! "$#" -eq 0 ]; then project=$1; fi
+
+mkdir ${project};
+
+cd ${project};
+touch index.html
+mkdir styles
+touch styles/main.css
+mkdir javascript
+touch javascript/main.js
+}
+
+function gpt
+{
+# https://github.com/jucasoliveira/terminalGPT/blob/main/README.md
+npx terminalgpt chat;
+}

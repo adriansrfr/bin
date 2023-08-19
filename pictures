@@ -1,0 +1,16 @@
+#!/bin/bash
+
+function viewpics
+{
+  #feh -t -Sfilename -E 128 -y 128 -W 1024
+#https://karlch.github.io/vimiv/docs/usage
+  vimiv  </dev/null &>/dev/null &
+  echo toggle thumbnails with t
+}
+
+
+
+function getthumbnails
+{
+  lsix .
+}

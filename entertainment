@@ -1,0 +1,42 @@
+#!/bin/bash
+
+function aquarium
+{ asciiquarium; }
+
+function getfire
+{ aafire; }
+
+function getguitar
+{
+  nemo /media/adrian/IT_ToolBox/FileCabinet/Guitar </dev/null &>/dev/null &
+}
+
+
+function getTodaypictures
+{
+cd ~/Pictures
+current_date=$(date +'%Y%m%d')
+#  if [ ! "$#" -gt 0 ]; then read -p "Enter a word to search : " location; fi ;
+#  if [ ! "$#" -eq 0 ]; then location=$1; fi
+for file in $(ls -1 | grep "^${current_date}_")
+do
+echo $file
+#   mv $file ${file%_*}_delray.jpeg
+done
+}
+
+
+function getstoicism
+{
+
+# get list of available cow files
+cow_files=$(cowsay -l | tail -n +2 | awk '{print $1}')
+
+# randomly select a cow picture
+selected_cow=$(echo $cow_files | tr ' ' '\n' | shuf -n 1)
+
+# generate the output using the selected cow picture
+/home/adrian/.config/stoic-thoughts-master/quote.sh |cowsay -f $selected_cow 
+}
+alias getcow="getstoicism"
+getcow

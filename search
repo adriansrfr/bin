@@ -1,0 +1,125 @@
+#!/bin/bash
+
+function getvimkeybindings
+{
+  grep leader ~/.vimrc | grep -vE '^"'                                                                    
+}
+function getbackgroundlocation
+{
+  gsettings get org.gnome.desktop.background picture-uri;
+}
+
+alias getwallpaperlocation="getbackgroundlocation"
+
+function getwallpapers
+{
+  # open in kitty to and get icon preview for each
+  ls ~/.config/variety/Downloaded/Unsplash | fzf ;
+}
+
+function setwallpaper
+{
+
+# pausetime between iterations
+sleeptime=900
+# location of wallpapers folder
+location="/home/adrian/.config/variety/Downloaded/Unsplash"
+
+# ////////////////////////////////////////
+# For random wallpaper selection
+#array=($(ls $location*)) # populate array with directory contents
+#( IFS=$'\n'; echo "${array[*]}" ) # list array content for debug
+#size=${#array[@]}
+#index=$(($RANDOM % $size))
+#wallpaper=${array[$index]} # randomly select
+
+wallpaper=$(ls $location | fzf)
+
+
+#echo " SELECTED WALLPAPER = "$wallpaper
+
+dbus-send --session --dest=org.kde.plasmashell --type=method_call /PlasmaShell org.kde.PlasmaShell.evaluateScript 'string:
+var Desktops = desktops();
+for (i=0;i<Desktops.length;i++) {
+        d = Desktops[i];
+        d.wallpaperPlugin = "org.kde.image";
+        d.currentConfigGroup = Array("Wallpaper",
+                                    "org.kde.image",
+                                    "General");
+        d.writeConfig("Image", "file://'''$location'''/'${wallpaper}'");
+}'
+sleep $sleeptime
+
+#done;
+
+}
+
+function getbashcommands
+{
+  grep -i bind ~/.bashrc ;
+}
+
+function getbashalias
+{
+  grep -i alias ~/.bashrc ;
+}
+
+function getbinalias
+{
+  grep -i -r ^alias  ~/bin
+}
+
+function getfunctions
+{
+ echo Functions in bin folder:
+ grep ^function ~/bin/* | awk '{print $2}' | sort;
+}
+
+function getprogramdefinitions
+{
+ cat ~/bin/programdefinitions | fzf;
+}
+
+function getfunction
+{
+if [ ! "$#" -gt 0 ]; then read -p "Did you mean getfunctions? Enter a word to search bin for a function: " $varWord; fi ;
+  if [ ! "$#" -eq 0 ]; then varWord=$1; fi
+  cd ~/bin/
+  a=$(grep -i ^function ~/bin/*  | awk '{print $2}' | grep -i $varWord);
+  for word in $a; do echo $word; done;
+}
+
+function where 
+{
+  shopt -s extdebug ;
+  declare -F $1 ;
+  # to turn off extdebug: 
+  shopt -u extdebug ;
+}
+
+function getcommand
+{ declare -F | grep -v _ | awk '{print $3}' | fzf; }
+
+function findcommand
+{ grep $1 ~/bin/* || echo 'Nothing found'; }
+
+function listcommand
+{ grep ^function ~/bin/*; }
+
+function getcheat
+{ curl cheat.sh/$1; }
+
+function getinstalledprograms
+{
+  dpkg -l | awk -F ' ' '{$1=$3=$4=""; print $0}'| sed 's/ //' | awk 'sub(" ", "\t")' | column -t -s "$(printf '\t')";
+}
+
+function getrunningprograms
+{
+  ps -eo comm | sort -u
+}
+
+function upgradepip
+{
+  python3 -m pip install --upgrade pip
+}
