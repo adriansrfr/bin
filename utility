@@ -40,6 +40,18 @@ function dir
   # stat -f "%Sm" -t "%Y-%m-%d %H:%M" "$i"
 #done
 }
+
+function getgitrepo
+{
+  # curl https://api.github.com/users/adriansrfr/repos >> adriansrfr.json
+
+  #powershell -c "cat adriansrfr.json | convertfrom-json | select html_url,full_name,description,created_at,updated_at,git_url" ;
+
+  curl https://api.github.com/users/adriansrfr/repos -s | jq -r '(["REPO","DESCRIPTION","UPDATED","VISIBILITY"] | (., map(length*"-"))) , (.[] | [.full_name,.description,.updated_at,.visibility]) | @tsv' | column -ts $'\t'
+
+}
+
+
 function getvoltaprograms
 {
  echo Get node, npm, or yarn programs installed with volta;
@@ -192,4 +204,7 @@ function getdup
 {
   $1 | sort | uniq -d ;
 
+}
+function jsonArrayToTable(){
+     jq -r '(.[0]|keys_unsorted|(.,map(length*"-"))),.[]|map(.)|@tsv'|column -ts $'\t'
 }
