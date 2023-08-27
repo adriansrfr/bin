@@ -1,11 +1,7 @@
 #!/bin/bash
 
-
 function savebravetabstpcsv
 {
-
-
-
 # Get the PID of the Brave process
 brave_windows=$(pgrep -x brave)
 
@@ -21,28 +17,17 @@ for window in $brave_windows; do
   # Write the URL to the CSV file
   echo $url >> ~/temp/brave_urls.csv
 done
-
-
-
 }
-
-
-
 
 
 function getbook
 {
-
   if [ ! "$#" -gt 0 ]; then read -p "Enter a word to search the web for pdf or epub: " varWord; fi ;
   if [ ! "$#" -eq 0 ]; then varWord="$1"; fi
 
   echo "Processing "$varWord""
-
   brave-browser "https://www.google.com/search?q=-inurl:htm -inurl:html -inurl:php intitle:'index of' (pdf|epub)    \"$varWord\""
-
-
 }
-
 
 function getaudio
 {
@@ -53,7 +38,6 @@ function getaudio
   echo "Processing "$varWord""
 
   brave-browser "https://www.google.com/search?q=-inurl:htm -inurl:html -inurl:php intitle:'index of' (mp3|mp4|wav)    \"$varWord\""
-
 
 }
 
