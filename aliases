@@ -6,6 +6,12 @@ function todo
   vim -c 'noautocmd vimgrep /#todo/j *.md | cope' 
 }
 
+function music
+{
+  cd ~/Music;
+
+}
+
 function pdf
 {
   ~/.config/pdf/Sioyek-x86_64.AppImage  </dev/null &>/dev/null & 
