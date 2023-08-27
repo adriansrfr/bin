@@ -9,7 +9,12 @@ function getwindowmgr
 {
   wmctrl -m | grep --color=always Name:;
 }
+function screensaver
+{
 
+  xscreensaver-command -activate;
+
+}
 function getcomputer
 {  neofetch; }
 # cat /etc/os-release;
@@ -20,9 +25,11 @@ function getpath
 
 function getprocess
 { 
-    [ -z "$var" ] && echo "Enter an argument or did you mean getprocesses? " ||
+  if [ ! "$#" -gt 0 ]; then read -r -p "Enter a process to search: " var; fi ;
+  if [ ! "$#" -eq 0 ]; then var=$1; fi
+    #[ -z "$var" ] && echo "Enter an argument or did you mean getprocesses? " ||
 
-  ps aux | grep -i $1 | grep -v grep; }
+  ps aux | pgrep -i "$var" | pgrep -v grep; }
 
 function getprocesses
 {
@@ -46,7 +53,7 @@ sudo  pm-suspend;
 
 function getcpu
 {
-  lscpu | egrep 'Model name|Socket|Thread|NUMA|CPU\(s\)';
+  lscpu | grep -E 'Model name|Socket|Thread|NUMA|CPU\(s\)';
 }
 
 function getsettings
