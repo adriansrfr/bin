@@ -2,7 +2,7 @@
 
 function getpowershellmodules
 {
-  cd /home/adrian/.local/share/powershell/Modules
+  cd /home/adrian/.local/share/powershell/Modules || exit
 }
 
 function getweather
@@ -30,6 +30,11 @@ function startdalai
 function getvimhelp
 {
  vim /home/adrian/.vim/plugged/vimwiki/doc/vimwiki.txt;
+}
+
+function getbills
+{
+  powershell -c "import-csv /media/adrian/IT_ToolBox/FileCabinet/Finance/Bills/bills.csv | ft -autosize"
 }
 
 function dir 
@@ -68,7 +73,7 @@ function updatenpm
 
 function getbravefavorites
 {
-  cat ~/.config/BraveSoftware/Brave-Browser/Default/Bookmarks | jq .roots.bookmark_bar.children[] ;
+  bat ~/.config/BraveSoftware/Brave-Browser/Default/Bookmarks | jq .roots.bookmark_bar.children[] ;
 }
 
 function topten 
@@ -87,7 +92,7 @@ function topten
 
          else
 
-  history | awk '{cmd[$2]++} END {for(elem in cmd) {print cmd[elem], elem}}' | sort -n -r | head -n $1;
+  history | awk '{cmd[$2]++} END {for(elem in cmd) {print cmd[elem], elem}}' | sort -n -r | head -n "$1";
         fi
 }
 #function topten () {
@@ -102,6 +107,7 @@ function getdiskspace
 
 function gethelp
 {
+  echo shellcheck "name of script"
   echo howdoi;
   echo tldr;
   echo navi '(not installed)';
@@ -111,17 +117,17 @@ function gethelp
 
 function vpn
 {
-  sudo protonvpn $1;
+  sudo protonvpn "$1";
 }
 
 function getpath
 {
-  echo $PATH | tr ':' '\n'
+  echo "$PATH" | tr ':' '\n'
 }
 
 function getduplicate
 {
-  ls | uniq -i -d
+  find . | uniq -i -d
 }
 
 function getinstalledprograms
@@ -133,18 +139,18 @@ function addTimeToYoutube
 {
 #Todo: remove https:// and readd https://
     # Add catch block for special characters that break the string
-  if [  "$#" -eq 0  ]; then read -p "Enter the link: " link; fi ;
+  if [  "$#" -eq 0  ]; then read -r -p "Enter the link: " link; fi ;
   if [  "$#" -gt 0 ]; then link="$1"; fi
 
-  if [  "$#" -lt 2 ]; then read -p "Enter the minute: " minute; fi ;
+  if [  "$#" -lt 2 ]; then read -r -p "Enter the minute: " minute; fi ;
   if [  "$#" -gt 1 ]; then minute="$2"; fi
 
-  if [  "$#" -lt 3 ]; then read -p "Enter the second: " second; fi ;
+  if [  "$#" -lt 3 ]; then read -r -p "Enter the second: " second; fi ;
   if [  "$#" -gt 2 ]; then second="$3"; fi
 
   combined="${link}&t=${minute}m${second}s"
 
-  echo ${combined};
+  echo "${combined}";
 }
 
 function getdefaultprograms
@@ -161,10 +167,8 @@ echo  C-w: search wiki;
 }
 
 function explorer 
-{ nemo $PWD </dev/null &>/dev/null & }
+{ nemo "$PWD" </dev/null &>/dev/null & }
 
-function sourcebashrc
-{ source ~/.bashrc; }
 
 
 function getbashshortcut 
@@ -174,7 +178,7 @@ function getbashshortcut
 
 function getfilecabinet 
 {
-  cd /media/adrian/IT_ToolBox/FileCabinet;
+  cd /media/adrian/IT_ToolBox/FileCabinet || exit ;
 }
 
 function openfilecabinet
