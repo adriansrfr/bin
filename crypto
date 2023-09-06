@@ -1,4 +1,0 @@
-#!/bin/bash
-
-function getcrypto 
-{ sudo snap run cointop; }
