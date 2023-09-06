@@ -2,96 +2,128 @@
 
 function todo
 {
-  cd ~/vimwiki
+  cd ~/vimwiki || exit
   vim -c 'noautocmd vimgrep /#todo/j *.md | cope' 
 }
 
 function music
 {
-  cd ~/Music;
+  cd ~/Music || exit
 
 }
 
-function pdf
+function openpdf
 {
-  ~/.config/pdf/Sioyek-x86_64.AppImage  </dev/null &>/dev/null & 
+ if [[ ! "$1" =~ \.pdf$ ]]; then
+        echo "Error: The first argument is not a PDF file."
+        return 1
+    fi
+
+  ~/.config/pdf/Sioyek-x86_64.AppImage "$1" </dev/null &>/dev/null & 
 }
 
 function wiki 
 {
-  cd ~/vimwiki/ ; nvim  ~/vimwiki/100_Index.md ;
+  cd ~/vimwiki/ || exit; 
+  nvim  ~/vimwiki/100_Index.md ;
 }
  
 function vimwiki
- { cd ~/vimwiki; nvim ~/vimwiki/100_Index.md;}
+ { cd ~/vimwiki || exit; 
+   nvim ~/vimwiki/100_Index.md;
+ }
+
 
 function databases
-{ cd ~/Documents/Programming/Databases; }
+{ 
+  cd ~/Documents/Programming/Databases || exit
+}
 
 function documents
-{ cd ~/Documents;}
+{ 
+  cd ~/Documents || exit;
+}
 
 function downloads
-{ cd ~/Downloads; }
+{ cd ~/Downloads || exit;
+}
 
 function pictures
-{ cd ~/Pictures; }
+{
+  cd ~/Pictures || exit
+}
 
 function cgrep
-{ grep --color=always; }
+{
+  grep --color=always; 
+}
  
  
 function cls
-{  clear; }
+{
+  clear; 
+}
  
 function vim
 {
     if [ ! "$#" -gt 0 ]; then nvim $# ; fi ;
     if [ ! "$#" -eq 0 ]; then nvim; fi;
-    
 }
  
 function bin
-{ cd ~/bin; }
+{
+  cd ~/bin || exit; 
+}
  
 function lichess
-{ xdg-open lichess.org </dev/null &>/dev/null &}
+{
+  xdg-open lichess.org </dev/null &>/dev/null &
+}
 
 function youtube
-{ xdg-open youtube.com </dev/null &>/dev/null &}
+{
+  xdg-open youtube.com </dev/null &>/dev/null &
+}
 
-function surfline
-{ xdg-open surfline.com </dev/null &>/dev/null &}
- 
-function redreef
-{ xdg-open https://video-monitoring.com/beachcams/boca/ </dev/null &>/dev/null &   }
-
-function forecast
-{ brave-browser https://www.swellinfo.com/surf-forecast/palm-beach-florida https://www.surf-forecast.com/breaks/Boynton-Beach </dev/null &>/dev/null &}
  
 function chess
-{ cd ~/vimwiki; nvim ~/vimwiki/chess.md;}
+{
+  cd ~/vimwiki || exit; 
+  nvim ~/vimwiki/chess.md;
+}
 
 function editor
-{ nvim;}
+{
+  nvim;
+}
  
 function home
-{ cd ~;}
+{
+  cd ~ || exit;
+}
  
 function clip
-{ xclip -selection c;} #For pasting with Ctrl-v
+{ 
+  xclip -selection c;
+} #For pasting with Ctrl-v
 
 function vimrc
-{ nvim ~/.vimrc;}
+{
+  nvim ~/.vimrc;
+}
  
 function bashrc
 { nvim ~/.bashrc;}
  
-function sbashrc
-{ source ~/.bashrc;}
+function rebash
+{
+  cd ~ || exit
+ source ~/dotfiles/.bashrc;
+  cls
+}
 
 function bashkeybindings
-{  cat ~/.bashrc | grep \"^[^;]\"  | grep -v keybindings | grep -i bind;}
+{  less ~/.bashrc | grep \"^[^;]\"  | grep -v keybindings | grep -i bind;}
  
 function jan
 { cal -m 01;}
