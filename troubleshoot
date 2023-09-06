@@ -2,3 +2,30 @@
 
 function troubleshoot 
 { xdg-open https://www.shellcheck.net/; }
+
+
+
+
+function where 
+{
+  shopt -s extdebug ;
+  declare -F "$1" ;
+  # to turn off extdebug: 
+  shopt -u extdebug ;
+}
+
+
+function getprocess
+{ 
+  if [ ! "$#" -gt 0 ]; then read -r -p "Enter a process to search: " var; fi ;
+  if [ ! "$#" -eq 0 ]; then var=$1; fi
+    #[ -z "$var" ] && echo "Enter an argument or did you mean getprocesses? " ||
+
+  ps aux | pgrep -i "$var" | pgrep -v grep; 
+}
+
+function getprocesses
+{
+  btop ;
+}
+
