@@ -1,20 +1,77 @@
 #!/bin/bash
-
-function fzls
+#todo: add headers, keybindings, preview label, refresh
+# https://thevaluable.dev/practical-guide-fzf-example/
+function fzlinks
 {
-  find . | fzf
+  cd ~/vimwiki || exit
+
+rg "\[\w+*\]\(\w+*\)" -w | awk -F"[" '{print "[" $2}' | awk '{print $1}'
+
+}
+
+function fzdeletefile
+{
+  #fzfiles now has delete capabilities
+  local file
+file="$(fd -t f -t --maxdepth 1 | fzf -m --bind ctrl-a:select-all,ctrl-d:deselect-all  --preview '[[ -r {} ]] && bat --style=numbers --color=always --line-range :500 {}')"
+  if [[ -n $file ]]
+    then 
+      gio trash ${file}
+    #  echo "${file}"
+  fi
+}
+
+function fzfiles
+{
+  local file
+#find /path/to/search -type f -readable -exec rm {} \;
+# ctrl-r:reload(find -type d) 
+file="$(fd -t f -t --maxdepth 1 | fzf -m --header='CTRL-a:select-all,CTRL-d:deselect,CTRL-r:reload,DEL:trash' --bind='ctrl-a:select-all,ctrl-d:deselect-all,ctrl-r:reload(fd -t f -t --maxdepth 1),del:execute(gio trash {})' --preview '[[ -r {} ]] && bat --style=numbers --color=always --line-range :500 {}')"
+  if [[ -n $file ]]
+    then 
+          vim ${file}
+# Possible solution to the word splitting:
+# https://www.reddit.com/r/linuxquestions/comments/aorbec/problem_with_fzf_multiselect_for_files_with/
+
+  fi
+}
+
+function fzrenamefile
+{
+# if [[ $# -gt 0 ]]; then
+#     search_terms="$*"
+#   else unset search_terms;
+#   fi
+#unset search_terms
+#unset file
+  file="$(fzf --preview='file {}')" #--bind='del:execute(rm -ri {})'
+    if [[ -n $file ]]
+    then
+      read -r -p "Enter then new name: " newName
+      mv -i "$file" "$newName" && echo Renamed "$file" to "$newName"
+  fi
+}
+
+function fzdeletefolder
+{
+  folder="$(find . -type d | fd -t d  --maxdepth 1 | fzf --preview='tree -C {} | head -n 50' \
+  --header='Enter y to delete')" #--bind='del:execute(rm -ri {})'
+    if [[ -n $file ]]
+    then
+      # rm -ri "$folder"
+      gio trash "$folder"
+  fi
 }
 
 #alias btags='fzf -e --preview "bat --color=always --style=header,grid --line-range :500 {}"'
 
-function fzphotos
+function fzfolder
 {
-  cd ~/Pictures || exit
-  #ls -d $PWD/* | $(fzf --preview="xargs viu {}")
-  #ls -d $PWD/* | fzf | xargs viu 
-  find -d "$PWD/*" | fzf --preview="if [[ {} =~ ('.jpg'|'.JPG'|'.jpeg'|'.png'|'.PNG')$ ]]; then xargs viu {};fi"
-  #{};elif [ -d {} ]; then ls --color=always --group-directories-first -H {}; else nl -pba -w1 -s' ' {};fi"
+# Decided against showing files because of information overload
+  cd "$(find . -type d | fd -t d  --maxdepth 1| fzf --preview='tree -C {} | head -n 50')" || exit
+
 }
+
 
 function fzvids
 {
@@ -40,17 +97,47 @@ if [[ $# -gt 0 ]]; then
 
 }
 
-function fzwiki
+
+function fztabs
+{
+  # Currently searching by words only. Need to search by files
+
+cd vimwiki || exit
+
+  if [ "$#" -eq 0 ]; then read -r -p "Enter a word to search guitar tabs: " varWord; fi ;
+  if [ "$#" -gt 0 ]; then varWord="$*"; fi
+
+local file
+file=$(fzf --preview 'bat --style=numbers --color=always --line-range :500 {}') # &&  rg --colors 'match:bg:yellow' \
+#      --ignore-case --pretty --context 10 "$varWord")
+
+
+    if [[ -n $file ]]
+    then
+       vim -c "BTags" $file 
+    fi
+
+    # local file
+    # local file
+    # file="$(rg --max-count=1 --ignore-case --files-with-matches --no-messages "$varWord" |
+    #   fzf --preview="rg --ignore-case --pretty --context 10 \"$varWord\" {}" )"
+
+   # if [[ -n $file ]]
+   # then
+    #   vim "$file"
+  # fi
+}
+
+function fzwikiword
   {
     cd ~/vimwiki || exit
-  if [ ! "$#" -gt 0 ]; then read -r -p "Enter a word to search VimWiki: " varWord; fi ;
-  if [ ! "$#" -eq 0 ]; then varWord=$1; fi
+  if [ "$#" -eq 0 ]; then read -r -p "Enter a word to search VimWiki: " varWord; fi ;
+  if [ "$#" -gt 0 ]; then varWord="$*"; fi
 
     local file
-    file="$(rg --max-count=1 --ignore-case --files-with-matches --no-messages "$varWord" |
-      fzf --preview="rg --ignore-case --pretty --context 10 \"$varWord\" {}"  &&  rg --colors 'match:bg:yellow' \
-      --ignore-case --pretty --context 10 )"
-
+    file="$(rg --ignore-case --files-with-matches --no-messages "$varWord" |
+      fzf --preview="rg --ignore-case --pretty --context 10 \"$varWord\" {}" )"
+# --max-count=1  
    if [[ -n $file ]]
    then
       vim "$file"
@@ -59,7 +146,7 @@ function fzwiki
 
 function fzheader
 {
-
+# Searches vimwiki headers
   cd ~/vimwiki || exit
   if [ ! "$#" -gt 0 ]; then read -r -p "Enter a word to search VimWiki: " varWord; fi ;
   if [ ! "$#" -eq 0 ]; then varWord=$1; fi
@@ -115,51 +202,6 @@ fi
 
 }
 
-function fzfunction() {
-
-if [[ $# -gt 0 ]]; then
-    search_terms="$*"
-  fi
-
- cd ~/bin || exit
- file_line=$(rg "^function $search_terms" -i --no-ignore --no-heading --column --color ansi -g \* | 
-        fzf --ansi --border --reverse --delimiter=: \
-        --preview 'bat --color always {1} -n  -H {2} -r {2}:+20') 
-        #--preview-window 'top,80%,border-bottom')
-
-        file=$(echo "$file_line" | gawk -F: '{print $1}')
-        line=$(echo "$file_line" | gawk -F: '{print $2}')
-    if [[ -n $file ]]; then
-        nvim +"$line" "$file"
-    fi
-
-}
-
-
-
-function fzpic
-  # Searches pictures directory
-{
-  cd ~/Pictures && fd -t f -H -I |
-    fzf --preview 'sleep 1 > /dev/null 2>&1 & echo {}'  |
-    xargs -r -d "\n" $
-}
-
-function fzfilecabinet
-{
-  cd /media/adrian/IT_ToolBox/FileCabinet || exit  
-  cd "$(fd -t d |
-    fzf --preview="tree -L 2 {}" --bind="space:toggle-preview" )" |
-    xargs -r -d "\n" "$EDITOR" || return #xdg-open 2>&-
- #    echo "$PWD" && tree -L 2
-}
-
-
-function wallpaper
-{
-  find ~/.config/variety/Downloaded/Unsplash | fzf --preview="feh --bg-scale ~/.config/variety/Downloaded/Unsplash/{}" | 
-    xargs -I {} feh --bg-scale ~/.config/variety/Downloaded/Unsplash/{}
-}
 
 
 
@@ -181,6 +223,90 @@ function fztodo
 
 
 
+
+function fzfunction 
+{
+
+if [[ $# -gt 0 ]]; then
+    search_terms="$*"
+  else unset search_terms;
+  fi
+
+ cd ~/bin || exit
+ local file_line
+ local file
+ local line
+ file_line=$(rg "^function *$search_terms*" -i --no-ignore --no-heading --column --color ansi -g \* | 
+        fzf --ansi --border --reverse --delimiter=: \
+        --preview 'bat --color always {1} -n  -H {2} -r {2}:+20') 
+        #--preview-window 'top,80%,border-bottom')
+
+        file=$(echo "$file_line" | gawk -F: '{print $1}')
+        line=$(echo "$file_line" | gawk -F: '{print $2}')
+    if [[ -n $file ]]; then
+        nvim +"$line" "$file"
+    fi
+
+}
+
+function fzmodule 
+{
+if [[ $# -gt 0 ]]; then
+    varWord="$*"
+  else unset varWord;
+  fi
+  cd ~/bin || exit
+unset file
+    #   fzf --preview="rg --ignore-case --pretty --context 10 \"$varWord\" {}" &&  rg --colors 'match:bg:yellow' \
+    #   --ignore-case --pretty --context 10 "$varWord")"
+
+# file_line=$(rg "$varWord" -i --no-ignore --no-heading --column --color ansi -g \* | 
+#        fzf --ansi --border --reverse --delimiter=: \
+#        --preview 'bat --color always {1} -n  -H {2} -r {2}:+20') 
+local file
+file=$(fzf --preview 'bat --style=numbers --color=always --line-range :500 {}') # &&  rg --colors 'match:bg:yellow' \
+#      --ignore-case --pretty --context 10 "$varWord")
+
+
+    if [[ -n $file ]]
+    then
+       vim -c "BTags" $file 
+    fi
+
+        # file=$(echo "$file_line" | gawk -F: '{print $1}')
+        # # line=$(echo "$file_line" | gawk -F: '{print $2}')
+    # if [[ -n $file ]]; then
+        # vim -c "BTags" "$file"
+    # fi
+
+}
+
+
+
+
+function fzpowershell
+{
+
+if [[ $# -gt 0 ]]; then
+    search_terms="$*"
+  else unset search_terms
+  fi
+  
+  cd /home/adrian/.local/share/powershell/Modules || exit
+
+ file_line=$(rg "^function *$search_terms*" -i --no-ignore --no-heading --column --color ansi -g \* | 
+        fzf --ansi --border --reverse --delimiter=: \
+        --preview 'bat --color always {1} -n  -H {2} -r {2}:+20') 
+        #--preview-window 'top,80%,border-bottom')
+
+        file=$(echo "$file_line" | gawk -F: '{print $1}')
+        line=$(echo "$file_line" | gawk -F: '{print $2}')
+     if [[ -n $file ]]; then
+        nvim +"$line" "$file"
+     fi
+
+}
+
 function fzword
 {
  # Searches current directory. Searches inside files for keyword. Lists files with preview
@@ -190,26 +316,29 @@ function fzword
   
   local file
     file="$(rg --max-count=1 --ignore-case --files-with-matches --no-messages "$varWord" | 
-      fzf --preview="rg --ignore-case --pretty --context 10 \"$varWord\" {}" &&  
-      rg --colors 'match:bg:yellow' --ignore-case --pretty --context 10 "$varWord")"
+      fzf --preview="rg --ignore-case --pretty --context 10 \"$varWord\" {}" )" #&&  
+#      rg --colors 'match:bg:yellow' --ignore-case --pretty --context 10 "$varWord")"
 
    if [[ -n $file ]]
    then
-      vim "$file"
+      vim $file
    fi
 }
 
 function fzbin
 {
+# Fzword in bin folder
   cd ~/bin || exit
   if [ ! "$#" -gt 0 ]; then read -r -p "Enter a word to search binaries: " varWord; fi ;
   if [ ! "$#" -eq 0 ]; then varWord=$1; fi
 
 
     local file
-    file="$(rg --max-count=1 --ignore-case --files-with-matches --no-messages "$varWord" | 
-      fzf --preview="rg --ignore-case --pretty --context 10 \"$varWord\" {}" &&  
-      rg --colors 'match:bg:yellow' --ignore-case --pretty --context 10 "$varWord")"  
+    file="$(rg  --ignore-case --files-with-matches --no-messages "$varWord" | 
+#--max-count=1
+      fzf --preview-window=up:50%:wrap --preview="rg --ignore-case --pretty --context 10 \"$varWord\" {}"  )"
+          #&&  
+#      rg --colors 'match:bg:yellow' --ignore-case --pretty --context 10 "$varWord")"  
 
    if [[ -n $file ]]
    then
@@ -217,15 +346,6 @@ function fzbin
    fi
 }
 
-function Files
-{
-  local file
-  file="$(fzf --preview 'bat --style=numbers --color=always --line-range :500 {}')"
-  if [[ -n $file ]]
-    then 
-      vim "$file"
-  fi
-}
 
 function fzgbl
 {
@@ -245,54 +365,43 @@ function fzgbl
    fi
 }
 
-
-
-
-
 function fzopen
 {
-  fd -t f -H -I | 
+  # Needs work. Not working yet.
+  fd -t f -H -I -d 1 | 
     fzf --preview 'bat --style=numbers --color=always --line-range :500 {}'| 
     xargs -r -d "\n" xdg-open "$1" 2>&-
 }
 
-function fzdir
+
+function fztest
 {
-  find . | fzf --preview="echo user={3} when={-4..-2}; cat {-1}" --header-lines=1
+  cd ~/bin || exit
+
+ ag bin  "$(tree -dfi | ag '\/X.*')" 
+
 }
 
-function fzcd
+
+
+
+function fzfilecabinet
 {
-    cd "$(fd -t d |
-    fzf --preview="tree -L 2 {}" --bind="space:toggle-preview" )" && 
-    echo "$PWD" && tree -L 2
+  cd /media/adrian/IT_ToolBox/FileCabinet || exit  
+  cd "$(fd -t d |
+    fzf --preview="tree -L 2 {}" --bind="space:toggle-preview" )" &&
+     echo "$PWD" && tree -L 2
 }
 
-# Fuzzy find from Home
-function fzhome
-{
-  cd "$HOME" || exit 
-  cd "$(fd -t d -H | 
-    fzf --preview="tree -L 1 {}" --bind="space:toggle-preview" --preview-window=:hidden)" && 
-    echo "$PWD" && tree -L 1
-}
-  # fuzzy find on Documents
+
 
 function fzdocs
 {
+  #fzcd for Documents folder
  cd ~/Documents && fd -t d | 
     fzf --preview="tree -L 2 {}" --bind="space:toggle-preview" && 
     echo "$PWD"
 }
-
-function fzdocs2 #ToDo add preview
-{
-  # Searches files of current directory
-  fzf -m -x | {   xargs -d'\n' -r "$@" &}
-}
-
-
-
 
 function fzman 
 {
@@ -305,41 +414,27 @@ function fzman
   # Get the colors in the opened man page itself
   #export MANPAGER="sh -c 'col -bx | bat -l man -p --paging always'"
 
-
-
-
-# fzf --preview="rg --ignore-case --fixed-strings --pretty --context 10 '"\($varWord\)"' {}")"
-
-
-
 function fzpdf 
 {
-  cd /media/adrian/IT_ToolBox/FileCabinet/pdftest || exit
+# Will require two variables: 1. PDF 2. Keyword
+# Add option to search all pdf in folder or make a separate function
 
-  if [ ! "$#" -gt 0 ]; then read -r -p "Enter a word: " varWord; fi ;
-  if [ ! "$#" -eq 0 ]; then varWord=$1; fi
+# if [[ ! -f "$1" ]]; then
+#        echo "Error: The first argument is not a valid file."
+#        return 1
+#    fi
 
-    pdfgrep -i -C 10 "$varWord" ./*.pdf | fzf --preview="rg --ignore-case --pretty --context 10 $varWord {}"  
+    if [[ ! "$1" =~ \.pdf$ ]]; then
+        echo "Error: The first argument is not a PDF file."
+        return 1
+    fi
+
+arg1="$1"
+varWord="$2"
+
+    pdfgrep -i -C 10 "$varWord" ./"$arg1" | fzf --preview="rg --ignore-case --pretty --context 10 $varWord {}"  
+#    pdfgrep -i -C 10 "$varWord" ./*.pdf | fzf --preview="rg --ignore-case --pretty --context 10 $varWord {}"  
     # rg  --ignore-case --no-messages "$varWord" |
   # 			fzf --sort --preview="[[ ! -z {} ]] && rga --pretty --context 10 {q} {}" 
 }
 
-#"fzf  --preview="rg --ignore-case --pretty --context 10 '"$*"' {}"#
-#      fzf --preview="rg --ignore-case --pretty --context 10 '"$varWord"' {}" #&&  rg --colors 'match:bg:yellow' --ignore-case --pretty --context 10 '$varWord' 
-#| fzf --preview="rg --ignore-case --pretty --context 10 '"$varWord"' {}"
-#https://rustrepo.com/repo/phiresky-ripgrep-all-rust-text-processing
-# 
-# RG_PREFIX="rga --files-with-matches"
-# 	local file
-# 	file="$(
-# 		FZF_DEFAULT_COMMAND="$RG_PREFIX '$varWord'" \
-# 			fzf --sort --preview="[[ ! -z {} ]] && rga --pretty --context 10 {q} {}" \
-# 				--phony -q "$1" \
-# 				--bind "change:reload:$RG_PREFIX {q}" \
-# 				--preview-window="60%:wrap"
-# 	)" &&
-# 	echo "opening $file" &&
-# 	vim "$file"
-
-#Need to change to open pdf itself
-#}
