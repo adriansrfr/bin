@@ -10,6 +10,24 @@
  	unset LF_TEMPDIR
 }
 
+function getinstalledprograms
+{
+    aptitude search '~i!~M' 
+}
+
+function startdalai
+{
+  npx dalai serve;
+}
+
+function getdefaultprograms
+{ bat /usr/share/applications/defaults.list; }
+function getpdf
+{
+
+  cd /media/adrian/IT_ToolBox/FileCabinet/PDF/ || exit
+}
+
 function getprograms
 {
 case "$(printf "Guake\nKeePass\nDropBox\nObsidian\n" | dmenu -l 10 -i -p "Programs:")" in
@@ -144,7 +162,6 @@ Split below        ctrl-)" | dmenu -l 10 ;
 function windows
 {
 echo "Kwin
-ctrl-alt-t open terminal
 meta-f Fullscreen
 meta-m Minimize
 meta-q Close
@@ -163,6 +180,5 @@ meta-l switch to window right
 Darkmode toggle mod-ctrl-d
 Rotate windows alt-tab
 Window overview mod-w
-Window walk-through alt-tab
-Window menu alt-space" | dmenu -l 22;
+Window menu alt-space" | dmenu -l 20;
 }
