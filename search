@@ -1,9 +1,5 @@
 #!/bin/bash
 
-function getvimkeybindings
-{
-  grep leader ~/.vimrc | grep -vE '^"'                                                                    
-}
 function getbackgroundlocation
 {
   gsettings get org.gnome.desktop.background picture-uri;
@@ -14,7 +10,7 @@ alias getwallpaperlocation="getbackgroundlocation"
 function getwallpapers
 {
   # open in kitty to and get icon preview for each
-  ls ~/.config/variety/Downloaded/Unsplash | fzf ;
+  find ~/.config/variety/Downloaded/Unsplash | fzf ;
 }
 
 function setwallpaper
@@ -49,19 +45,7 @@ for (i=0;i<Desktops.length;i++) {
         d.writeConfig("Image", "file://'''$location'''/'${wallpaper}'");
 }'
 sleep $sleeptime
-
 #done;
-
-}
-
-function getbashcommands
-{
-  grep -i bind ~/.bashrc ;
-}
-
-function getbashalias
-{
-  grep -i alias ~/.bashrc ;
 }
 
 function getbinalias
@@ -82,44 +66,20 @@ function getprogramdefinitions
 
 function getfunction
 {
-if [ ! "$#" -gt 0 ]; then read -p "Did you mean getfunctions? Enter a word to search bin for a function: " $varWord; fi ;
+if [ ! "$#" -gt 0 ]; then read -r -p "Did you mean getfunctions? Enter a word to search bin for a function: " varWord; fi ;
   if [ ! "$#" -eq 0 ]; then varWord=$1; fi
-  cd ~/bin/
-  a=$(grep -i ^function ~/bin/*  | awk '{print $2}' | grep -i $varWord);
-  for word in $a; do echo $word; done;
-}
-
-function where 
-{
-  shopt -s extdebug ;
-  declare -F $1 ;
-  # to turn off extdebug: 
-  shopt -u extdebug ;
+  cd ~/bin/ || exit
+  a=$(grep -i ^function ~/bin/*  | awk '{print $2}' | grep -i "$varWord");
+  for word in $a; do echo "$word"; done;
 }
 
 function getcommand
 { declare -F | grep -v _ | awk '{print $3}' | fzf; }
 
 function findcommand
-{ grep $1 ~/bin/* || echo 'Nothing found'; }
+{ grep "$1" ~/bin/* || echo 'Nothing found'; }
 
 function listcommand
 { grep ^function ~/bin/*; }
 
-function getcheat
-{ curl cheat.sh/$1; }
 
-function getinstalledprograms
-{
-  dpkg -l | awk -F ' ' '{$1=$3=$4=""; print $0}'| sed 's/ //' | awk 'sub(" ", "\t")' | column -t -s "$(printf '\t')";
-}
-
-function getrunningprograms
-{
-  ps -eo comm | sort -u
-}
-
-function upgradepip
-{
-  python3 -m pip install --upgrade pip
-}
