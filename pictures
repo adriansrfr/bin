@@ -1,9 +1,22 @@
 #!/bin/bash
 
+
+function fzphotos
+{
+  #Need to figure out best program for viewing photos
+  # See images and bashimages
+  cd ~/Pictures || exit
+  #ls -d $PWD/* | $(fzf --preview="xargs viu {}")
+  #ls -d $PWD/* | fzf | xargs viu 
+  fd -t f -t d -depth 1 | fzf --preview="if [[ {} =~ ('.jpg'|'.JPG'|'.jpeg'|'.png'|'.PNG')$ ]]; then xargs viu {};fi"
+  #{};elif [ -d {} ]; then ls --color=always --group-directories-first -H {}; else nl -pba -w1 -s' ' {};fi"
+}
+
+
 function viewpics
 {
   #feh -t -Sfilename -E 128 -y 128 -W 1024
-#https://karlch.github.io/vimiv/docs/usage
+# https://karlch.github.io/vimiv/docs/usage
   vimiv  </dev/null &>/dev/null &
   echo toggle thumbnails with t
 }
@@ -14,3 +27,28 @@ function getthumbnails
 {
   lsix .
 }
+
+function photos
+{
+  cd ~/Pictures || exit
+}
+
+function editphotos
+{
+  cd ~/Pictures || exit
+  geeqie </dev/null &>/dev/null & 
+}
+
+function photoshortcuts
+{
+echo "
+Rotate [,]
+ctrl-d Delete
+ctrl-r Rename
+space  Next picture
+ctrl-space Toggle next picture
+file:///usr/share/doc/geeqie/html/GuideReferenceKeyboardShortcuts.html
+"
+
+}
+
