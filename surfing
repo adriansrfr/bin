@@ -1,0 +1,35 @@
+#!/bin/bash
+
+
+
+function getweather
+{
+  #rain
+  xdg-open https://www.accuweather.com/en/us/lake-worth/33460/weather-radar/332279 </dev/null &>/dev/null &
+}
+
+function getrain
+{
+
+  xdg-open https://www.windy.com/-Rain-thunder-rain?rain,25.971,-80.045,8,m:eo5adW0 </dev/null &>/dev/null &
+}
+
+function getswell
+{
+xdg-open https://www.windy.com/-Waves-waves?waves,27.452,-78.802,8,m:eo5adW0 </dev/null &>/dev/null &
+}
+
+function surfline
+{
+  xdg-open surfline.com </dev/null &>/dev/null &
+}
+ 
+function redreef
+{
+  xdg-open https://video-monitoring.com/beachcams/boca/ </dev/null &>/dev/null &   
+}
+
+function forecast
+{
+  brave-browser https://www.swellinfo.com/surf-forecast/palm-beach-florida https://www.surf-forecast.com/breaks/Boynton-Beach </dev/null &>/dev/null &
+}

@@ -1,0 +1,174 @@
+#!/bin/bash
+#todo get file permission in directory
+
+function getpermissions
+{
+for filename in *
+do
+#unset permission
+    permission=$( stat -c "%a" "$filename" );
+    echo $permission $filename;
+done
+}
+
+function underscore
+{
+  # Replaces files in directory with spaces with underscores
+  #todo add recursive option. See wiki to see how under "replace"
+for f in *\ *; do mv "$f" "${f// /_}"; done
+}
+
+
+function gettrash
+{
+  trash-list | sort
+}
+
+function fzrecentfolders
+{
+   cd "$( history | grep " cd " | fzf)" || exit
+}
+
+function getrecentfiles
+{
+  cd ~/vimwiki || exit
+powershell -c "Get-ChildItem -file | Select-Object Name, Size, LastWriteTime | Sort-Object LastWriteTime -Descending | Select-Object -First 20";
+}
+
+function emptytrash
+{
+  trash-empty
+}
+
+function trash
+{
+  trash-put 
+}
+
+function restoretrash
+{
+trash-restore
+}
+
+function getpowershell
+{
+  cd $HOME/.local/share/powershell/Modules || exit
+}
+
+function getorphanfiles
+{
+
+  cd ~/vimwiki || exit
+
+File_List="$(rg -Files --max-depth 1 | xargs -n 1 basename )" # Get all files in wiki
+
+for f in ${File_List}  
+do
+    filename="${f%%.*}" # Convert each file to its basename
+    results=$(rg -i "\($filename\)"  --no-heading) # Search each file for a basename link
+
+([ -z "$results" ] && echo -e "\e[31mNo links for ($filename)::($results)\e[0m") 
+ unset results
+done
+}
+
+function getlink
+{
+
+grep www -i "$1" | awk -F "URL=" '{print $2}' >> "$HOME//Documents//URLs.txt" && echo "$2" & echo "Sent to Documents//URLs.txt"
+}
+
+function getorphanlinks
+{
+  cd ~/vimwiki || exit
+
+File_List="$(rg -Files --max-depth 1 | xargs -n 1 basename )" # Get all files in wiki
+
+for f in ${File_List}  
+do
+    filename="${f%%.*}" # Convert each file to its basename
+
+    links=$(rg "$filename" | rg "\($filename\)")
+
+    results=$(rg -i "\($filename\)"  --no-heading)
+
+([ -z "$results" ] && echo -e "\e[31mNo links for ($filename)::($results)\e[0m") 
+ unset results
+done
+}
+
+function prependfile
+{
+#todo add option to prompt 
+if [ ! "$#" -gt 0 ]; then read -r -p "Enter the term to prepend to all files: " prepend; fi ;
+  if [ ! "$#" -eq 0 ]; then prepend=$1; fi
+
+ for file in *; do
+     mv -i "$file" "$prepend$file"
+ done
+
+}
+
+function convertTxtToMd
+{
+find . -iname "*.txt" -exec bash -c 'mv "$0" "${0%\.txt}.md"' {} \;
+}
+
+function removeprepend
+{
+if [ ! "$#" -gt 0 ]; then read -r -p "Enter the term to remove prepend from all files: " removeprepend; fi ;
+  if [ ! "$#" -eq 0 ]; then removeprepend=$1; fi
+
+for file in *; do
+ newName=$(echo "${file//$removeprepend/}")
+ echo "$newName"
+    mv -i "$file" "$newName"
+  done
+}
+
+function getgitrepo
+{
+  # curl https://api.github.com/users/adriansrfr/repos >> adriansrfr.json
+
+  #powershell -c "cat adriansrfr.json | convertfrom-json | select html_url,full_name,description,created_at,updated_at,git_url" ;
+
+  curl https://api.github.com/users/adriansrfr/repos -s | jq -r '(["REPO","DESCRIPTION","UPDATED","VISIBILITY"] | (., map(length*"-"))) , (.[] | [.full_name,.description,.updated_at,.visibility]) | @tsv' | column -ts $'\t'
+
+}
+
+
+function getpath
+{
+  echo "$PATH" | tr ':' '\n'
+}
+
+
+
+function explorer 
+{ nemo "$PWD" </dev/null &>/dev/null & }
+
+
+
+
+
+function dir 
+{
+  powershell -c "get-dir" 
+}
+
+function testNote {
+notefilename="~/Documents/test.md"
+
+
+if [ ! -f $noteFilename ];
+    then
+    echo "# Notes for $(date +%Y-%m-%d)" > $notefilename
+    fi
+
+
+    nvim -c "norm Go" \
+    -c "norm Go## $(date +%H:%M)"\
+    -c "norm G20" \
+    -c "norm zz" \
+    -c "startinsert" $notefilename
+}

@@ -1,0 +1,26 @@
+#!/bin/bash
+function getvoltaprograms
+{
+ echo Get node, npm, or yarn programs installed with volta;
+ echo Example software removal: volta uninstall terminalgpt;
+ volta list;
+}
+
+function updatenpm
+{
+ # npm install -g npm@latest;
+ echo "Find out latest node version, then replace number with latest version"
+ echo "volta install node@19" 
+}
+
+function getbravefavorites
+{
+  bat ~/.config/BraveSoftware/Brave-Browser/Default/Bookmarks | jq .roots.bookmark_bar.children[] ;
+}
+
+
+function vpn
+{
+  sudo protonvpn "$1";
+}
+

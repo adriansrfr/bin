@@ -1,0 +1,218 @@
+#!/bin/bash
+
+function getterminalshortcuts
+{
+echo "
+ctrl-( split right
+ctrl-) split below
+ctrl-shift-left focus left
+ctrl-shift-right focus right
+"
+}
+
+function keepassshortcuts
+{
+  # https://keepass.info/help/kb/keyb_shortcuts.
+echo "
+ctrl-b username
+ctrl-c password
+ctrl-u url
+ctrl-v autotype
+ctrl-w close database" | dmenu -l 5;
+}
+
+function getshortcuts
+{
+  echo "getdwm
+windows
+brave
+cmd
+keepassshortcuts
+vimshortcuts"| dmenu -l 6;
+
+}
+
+function photoshortcuts
+{
+echo "
+Rotate [,]
+ctrl-d Delete
+ctrl-r Rename
+space  Next picture
+ctrl-space Toggle next picture
+file:///usr/share/doc/geeqie/html/GuideReferenceKeyboardShortcuts.html
+"
+}
+
+function getvimhelp
+{
+ vim /home/adrian/.vim/plugged/vimwiki/doc/vimwiki.txt;
+}
+
+function vimshortcuts
+{
+  echo "ctrl-t terminal
+  getvimhelp" | dmenu -l 2;
+
+}
+
+function getfuzzycommands
+{
+  echo "
+fzbin:          fzword in bin folder
+fzcd:           List all directories with preview tree
+fzdocs:         fzcd for Documents folder
+fzfilecabinet:  fzcd for FileCabinet
+fzfiles:        List all files with preview
+fzfunction:     List all functions in bin folder
+fzgbl:          List all backlinks in wiki
+fzheader:       List all headers in wiki
+fzlinks:        List all links in wiki
+fzman:          Man pages with fuzzy search
+fzopen:         Navigate directory. Open with default program. ***Work in progress***
+fzpdf:          
+
+"
+
+}
+
+function brave
+{
+echo "
+Address bar      ctrl-e
+Tab next         ctrl-page-up
+Tab previous     ctrl-page-down
+Tab new          ctrl-t
+Close window     ctrl-w
+Find next match  ctrl-g
+Scroll up        shift-space
+Scroll down      space
+Search bookmarks :b
+Search history   :h" | dmenu -l 7 ;
+}
+
+function cmd
+{
+echo "Konsole
+Focus above        ctrl-shift-up
+Keyboard shortcuts ctrl-alt-,
+Konsole            ctrl-alt-t
+Menu               ctrl-shift-f10
+New Tab            ctrl-shift-t
+New Window         ctrl-shift-n
+Quit               ctrl-shift-q
+Split left/right   ctrl-(
+Split below        ctrl-)" | dmenu -l 10 ;
+}
+
+function windows
+{
+echo "Kwin
+meta-f Fullscreen
+meta-m Minimize
+meta-q Close
+meta-down Move Window to Bottom
+meta-left Move Window to Left
+meta-right Move Window to Right
+meta-up Move Window Up
+meta-ctrl-Left Window to Bottom Left
+meta-ctrl-Right Window to Bottom Right
+meta-shift-Left Window to top Left
+meta-shift-Right Window to top right
+meta-k switch to window above
+meta-j switch to window below
+meta-h switch to window left
+meta-l switch to window right
+Darkmode toggle mod-ctrl-d
+Rotate windows alt-tab
+Window overview mod-w
+Window menu alt-space" | dmenu -l 20;
+}
+
+function getdwm
+{
+  echo "Alt+Shift+Enter - Launch xterm
+  Alt+Shift+C - Kill a client (a window, if you must insist)
+  Alt+t - Switch to tile layout
+  Alt+m - Switch to monocle layout
+  Alt+f - Switch to floating layout
+  Alt+b - Show/hide bar
+  Alt+p - Launch dmenu
+  Alt+j - Shift focus left
+  Alt+k - Shift focus right
+  Alt+Enter - Move focused window
+  Alt+h - Change ratio
+  Alt+l - Change ratio
+  Alt+[num] - Switch to tag [num]
+  Alt+Shift+Q - Quit dwm" | dmenu -l 14 ;
+}
+
+function gettmuxshortcuts
+{
+  echo ctrl-b c create window
+  echo ctrl-b x close window
+  echo ctrl-b % vertical split
+  echo ctrl-b \" horizontal split
+  echo ctrl-b o swap panes
+}
+
+function keepassshortcuts
+{
+echo ctrl-b username
+echo ctrl-c password
+echo ctrl-u url
+echo ctrl-v autotype
+
+}
+
+function wiki
+{
+ cd ~/vimwiki || exit
+  vim "./100_Index.md" ;
+}
+
+function gethelp
+{
+  echo shellcheck # name of script
+  echo howdoi;
+  echo tldr;
+  echo navi '(not installed)';
+  echo diff-so-fancy '(not installed)';
+  echo getshortcuts;
+}
+
+function getkeybinding
+{
+echo  C-f: fzword;
+echo  C-e: fzfolder;
+echo  C-n: nvim;
+# echo  C-i: wiki index;
+echo  C-b: search command modules; 
+echo  C-w: search wiki by word;
+}
+
+
+function getbashshortcut 
+{
+  xdg-open https://ss64.com/bash/syntax-keyboard.html
+}
+
+function getvimleaders
+{
+  grep leader ~/.vimrc | grep -vE '^"'                                                                    
+}
+
+function getbashcommands
+{
+  grep -i bind ~/.bashrc ;
+}
+
+function getcheat
+{ 
+  curl cheat.sh/"$1"; 
+}
+
+function getbashaliases
+{
+  grep -i alias ~/.bashrc ;
+}

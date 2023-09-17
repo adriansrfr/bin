@@ -1,0 +1,38 @@
+#!/bin/bash
+
+function getcrypto 
+{ 
+  sudo snap run cointop; 
+}
+
+function getpaydates
+{
+
+powershell -c get-paydates
+
+}
+
+function getamortization
+{
+  powershell -c get-amortization
+
+}
+
+
+function getbills
+{
+powershell -c get-bills
+
+# powershell -c "import-csv ~/vimwiki/Files/bills.csv | select-object Bill, @{Name='Amount';E={\"{0,10:F2}\" -f $_.Bill}}, Due, Interest, Notes, Previous| sort-object -Descending Due | ft -autosize"
+}
+
+function openbills
+{
+  xdg-open ~/vimwiki/Files/bills.csv;
+}
+function updatebills
+{
+  powershell -c "set-bills";
+}
+
+alias getpaycheck="getpaydates"
