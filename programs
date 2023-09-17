@@ -22,11 +22,6 @@ function startdalai
 
 function getdefaultprograms
 { bat /usr/share/applications/defaults.list; }
-function getpdf
-{
-
-  cd /media/adrian/IT_ToolBox/FileCabinet/PDF/ || exit
-}
 
 function getprograms
 {
@@ -41,7 +36,7 @@ esac
 
 function addnewsboaturl
 {
-  vim /home/adrian/snap/newsboat/6660/.newsboat/urls;
+  vim $HOME/snap/newsboat/6660/.newsboat/urls;
 }
 
 function startguake
@@ -64,58 +59,6 @@ function dropbox
   (flatpak run com.dropbox.Client &) &>/dev/null 2>&1
 }
 
-function obsidian
-{
-  flatpak run md.obsidian.Obsidian &>/dev/null 2>&1
-}
-
-function keepassshortcuts
-{
-  # https://keepass.info/help/kb/keyb_shortcuts.
-  echo "ctrl-b username
-ctrl-c password
-ctrl-u url
-ctrl-v autotype
-ctrl-w close database" #| dmenu -l 5;
-}
-
-function getshortcuts
-{
-  echo "getdwm
-windows
-brave
-cmd
-keepassshortcuts 
-vimshortcuts"| dmenu -l 6;
-
-}
-
-function vimshortcuts
-{
-  echo "ctrl-t terminal
-  getvimhelp" | dmenu -l 2;
-
-}
-
-function getdwm 
-{
-  echo "Alt+Shift+Enter - Launch xterm
-  Alt+Shift+C - Kill a client (a window, if you must insist)
-  Alt+t - Switch to tile layout
-  Alt+m - Switch to monocle layout
-  Alt+f - Switch to floating layout
-  Alt+b - Show/hide bar
-  Alt+p - Launch dmenu
-  Alt+j - Shift focus left
-  Alt+k - Shift focus right
-  Alt+Enter - Move focused window
-  Alt+h - Change ratio
-  Alt+l - Change ratio
-  Alt+[num] - Switch to tag [num]
-  Alt+Shift+Q - Quit dwm" | dmenu -l 14 ;
-}
-
-
 function zath
  {
    zathura $1 -P $2
@@ -134,51 +77,4 @@ function programs
 dmenu_run -i -l 20;
 }
 
-function brave
-{
-echo "Close window     ctrl-w
-Find next match  ctrl-g
-Navigation bar   ctrl-e
-Scroll up        shift-space
-Scroll down      space
-Search bookmarks :b
-Search history   :h" | dmenu -l 7 ;
-}
 
-function cmd
-{
-echo "Konsole
-Focus above        ctrl-shift-up
-Keyboard shortcuts ctrl-alt-,
-Konsole            ctrl-alt-t
-Menu               ctrl-shift-f10
-New Tab            ctrl-shift-t
-New Window         ctrl-shift-n
-Quit               ctrl-shift-q
-Split left/right   ctrl-(
-Split below        ctrl-)" | dmenu -l 10 ;
-}
-
-function windows
-{
-echo "Kwin
-meta-f Fullscreen
-meta-m Minimize
-meta-q Close
-meta-down Move Window to Bottom
-meta-left Move Window to Left
-meta-right Move Window to Right
-meta-up Move Window Up
-meta-ctrl-Left Window to Bottom Left
-meta-ctrl-Right Window to Bottom Right
-meta-shift-Left Window to top Left
-meta-shift-Right Window to top right
-meta-k switch to window above
-meta-j switch to window below
-meta-h switch to window left
-meta-l switch to window right
-Darkmode toggle mod-ctrl-d
-Rotate windows alt-tab
-Window overview mod-w
-Window menu alt-space" | dmenu -l 20;
-}

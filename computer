@@ -7,6 +7,7 @@ function getbios
 
 function getterminal
 {
+#todo test for if neofetch installed
 cyan="\033[1;34m" 
 result=$(neofetch | grep Term| grep -iv font | awk  -F\: '{print $2 }')
 printf "${cyan}Terminal: $result\n"
@@ -18,7 +19,9 @@ function getwindowmgr
 }
 
 function getcomputer
-{  neofetch; }
+{
+#todo test for if neofetch installed
+neofetch; }
 # cat /etc/os-release;
 # neofetch; consider switching to freshfetch. Also screenfetch is installed.
 # ~/.config/neofetch/config.conf

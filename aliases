@@ -1,5 +1,21 @@
 #!/bin/bash
 
+function vimtutor
+{
+  nvim +Tutor ;
+}
+
+function vimhelp
+{
+  nvim +"help | only";
+}
+
+function vimtoc
+{
+  #Vim Table of Contents
+  nvim +"help reference_toc | only";
+}
+
 function todo
 {
   cd ~/vimwiki || exit
@@ -12,6 +28,8 @@ function music
 
 }
 
+
+
 function openpdf
 {
  if [[ ! "$1" =~ \.pdf$ ]]; then
@@ -19,7 +37,14 @@ function openpdf
         return 1
     fi
 
-  ~/.config/pdf/Sioyek-x86_64.AppImage "$1" </dev/null &>/dev/null & 
+    (~/Applications/pdf/Sioyek-x86_64.AppImage "$1" &) &>/dev/null 2>&1 
+
+}
+
+function index
+{
+cd ~/vimwiki/ || exit ;
+nvim ~/vimwiki/100_Index.md ;
 }
 
 function wiki 
@@ -34,10 +59,7 @@ function vimwiki
  }
 
 
-function databases
-{ 
-  cd ~/Documents/Programming/Databases || exit
-}
+
 
 function documents
 { 
@@ -75,10 +97,7 @@ function bin
   cd ~/bin || exit; 
 }
  
-function lichess
-{
-  xdg-open lichess.org </dev/null &>/dev/null &
-}
+
 
 function youtube
 {
@@ -86,11 +105,7 @@ function youtube
 }
 
  
-function chess
-{
-  cd ~/vimwiki || exit; 
-  nvim ~/vimwiki/chess.md;
-}
+
 
 function editor
 {
@@ -117,9 +132,7 @@ function bashrc
  
 function rebash
 {
-  cd ~ || exit
- source ~/dotfiles/.bashrc;
-  cls
+ source ~/dotfiles/.bashrc && echo ".bashrc sourced!"
 }
 
 function bashkeybindings

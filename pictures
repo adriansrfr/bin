@@ -35,20 +35,10 @@ function photos
 
 function editphotos
 {
+#todo check if geeqie installed
   cd ~/Pictures || exit
   geeqie </dev/null &>/dev/null & 
 }
 
-function photoshortcuts
-{
-echo "
-Rotate [,]
-ctrl-d Delete
-ctrl-r Rename
-space  Next picture
-ctrl-space Toggle next picture
-file:///usr/share/doc/geeqie/html/GuideReferenceKeyboardShortcuts.html
-"
 
-}
 

@@ -1,133 +1,67 @@
 #!/bin/bash
-#todo: add headers, keybindings, preview label, refresh
+#todo: add headers, keybindings, preview label, refresh, sort alphabetically or in order
 # https://thevaluable.dev/practical-guide-fzf-example/
-function fzlinks
+#
+# commands needed:
+# bfile
+# bword
+# bheader
+# wfile
+# wword
+# wheader
+# 
+# fzfile
+# fzword
+# fzheader
+
+function fzfile
 {
-  cd ~/vimwiki || exit
 
-rg "\[\w+*\]\(\w+*\)" -w | awk -F"[" '{print "[" $2}' | awk '{print $1}'
-
-}
-
-function fzdeletefile
-{
-  #fzfiles now has delete capabilities
-  local file
-file="$(fd -t f -t --maxdepth 1 | fzf -m --bind ctrl-a:select-all,ctrl-d:deselect-all  --preview '[[ -r {} ]] && bat --style=numbers --color=always --line-range :500 {}')"
-  if [[ -n $file ]]
-    then 
-      gio trash ${file}
-    #  echo "${file}"
+if [[ $# -gt 0 ]]; then
+    varWord="$*"
+  else unset varWord;
   fi
-}
-
-function fzfiles
-{
+if [[ -n "$varWord" ]]; then
+  vim "${varWord}"
+  return
+fi
   local file
-#find /path/to/search -type f -readable -exec rm {} \;
-# ctrl-r:reload(find -type d) 
+if not [[ -n "$varWord"]]; then
 file="$(fd -t f -t --maxdepth 1 | fzf -m --header='CTRL-a:select-all,CTRL-d:deselect,CTRL-r:reload,DEL:trash' --bind='ctrl-a:select-all,ctrl-d:deselect-all,ctrl-r:reload(fd -t f -t --maxdepth 1),del:execute(gio trash {})' --preview '[[ -r {} ]] && bat --style=numbers --color=always --line-range :500 {}')"
-  if [[ -n $file ]]
+  fi
+
+if [[ -n $file ]]
     then 
-          vim ${file}
+          vim "${file}"
 # Possible solution to the word splitting:
 # https://www.reddit.com/r/linuxquestions/comments/aorbec/problem_with_fzf_multiselect_for_files_with/
-
   fi
 }
 
-function fzrenamefile
+function fbin
 {
-# if [[ $# -gt 0 ]]; then
-#     search_terms="$*"
-#   else unset search_terms;
-#   fi
-#unset search_terms
-#unset file
-  file="$(fzf --preview='file {}')" #--bind='del:execute(rm -ri {})'
-    if [[ -n $file ]]
-    then
-      read -r -p "Enter then new name: " newName
-      mv -i "$file" "$newName" && echo Renamed "$file" to "$newName"
-  fi
-}
-
-function fzdeletefolder
-{
-  folder="$(find . -type d | fd -t d  --maxdepth 1 | fzf --preview='tree -C {} | head -n 50' \
-  --header='Enter y to delete')" #--bind='del:execute(rm -ri {})'
-    if [[ -n $file ]]
-    then
-      # rm -ri "$folder"
-      gio trash "$folder"
-  fi
-}
-
-#alias btags='fzf -e --preview "bat --color=always --style=header,grid --line-range :500 {}"'
-
-function fzfolder
-{
-# Decided against showing files because of information overload
-  cd "$(find . -type d | fd -t d  --maxdepth 1| fzf --preview='tree -C {} | head -n 50')" || exit
-
-}
-
-
-function fzvids
-{
-
-cd /media/adrian/IT_ToolBox/FileCabinet || exit
+  # Used to be fzmodule
 if [[ $# -gt 0 ]]; then
-    search_terms="$*"
+    varWord="$*"
+  else unset varWord;
   fi
+  cd ~/bin || exit
+unset file
 
-  local video_file
-  if [[ $# -gt 0 ]]; then
-  video_file=$(find /media/adrian/IT_ToolBox/FileCabinet -type f \( -iname "*.mp4" -o -iname "*.mkv" -o -iname "*.avi" \) -exec ls {} + | 
-    grep -i "$search_terms" | fzf --preview 'sleep 1 > /dev/null 2>&1 & echo {}' --preview-window=up:50%:wrap)
-  else
-  video_file=$(find /media/adrian/IT_ToolBox/FileCabinet -type f \( -iname "*.mp4" -o -iname "*.mkv" -o -iname "*.avi" \) -exec ls {} + | 
-    fzf --preview 'sleep 1 > /dev/null 2>&1 & echo {}' --preview-window=up:50%:wrap)
-  fi
-
-
-  if [[ -n "$video_file" ]]; then
-    (vlc "$video_file" &) </dev/null &>/dev/null
-  fi
-
-}
-
-
-function fztabs
-{
-  # Currently searching by words only. Need to search by files
-
-cd vimwiki || exit
-
-  if [ "$#" -eq 0 ]; then read -r -p "Enter a word to search guitar tabs: " varWord; fi ;
-  if [ "$#" -gt 0 ]; then varWord="$*"; fi
+if [[ -n "$varWord" ]]; then
+  vim "${varWord}"
+  return
+fi
 
 local file
 file=$(fzf --preview 'bat --style=numbers --color=always --line-range :500 {}') # &&  rg --colors 'match:bg:yellow' \
 #      --ignore-case --pretty --context 10 "$varWord")
 
-
     if [[ -n $file ]]
     then
        vim -c "BTags" $file 
     fi
-
-    # local file
-    # local file
-    # file="$(rg --max-count=1 --ignore-case --files-with-matches --no-messages "$varWord" |
-    #   fzf --preview="rg --ignore-case --pretty --context 10 \"$varWord\" {}" )"
-
-   # if [[ -n $file ]]
-   # then
-    #   vim "$file"
-  # fi
-}
-
+  }
 function fzwikiword
   {
     cd ~/vimwiki || exit
@@ -142,6 +76,54 @@ function fzwikiword
    then
       vim "$file"
    fi
+}
+
+
+
+function bheaders
+{
+# fzfunction
+if [[ $# -gt 0 ]]; then
+    search_terms="$*"
+  else unset search_terms;
+  fi
+ local file_line
+ local file
+ local line
+ file_line=$(rg "^function *$search_terms*" -i --no-ignore --no-heading --column --color ansi -g \* | 
+        fzf --ansi --border --reverse --delimiter=: \
+        --preview 'bat --color always {1} -n  -H {2} -r {2}:+20') 
+        #--preview-window 'top,80%,border-bottom')
+
+        file=$(echo "$file_line" | gawk -F: '{print $1}')
+        line=$(echo "$file_line" | gawk -F: '{print $2}')
+    if [[ -n $file ]]; then
+        nvim +"$line" "$file"
+    fi
+}
+
+function bword
+{
+# Fzword in bin folder
+# Used to be fzbin
+  if [ ! "$#" -gt 0 ]; then read -r -p "Enter a word to search: " varWord; fi ;
+  if [ ! "$#" -eq 0 ]; then varWord=$1; fi
+
+if [[ $# -gt 0 ]]; then
+    varWord="$*"
+  fi
+cd ~/bin || exit 
+ file_line=$(rg "$varWord"  -i --no-ignore --no-heading --column --color ansi  | 
+        fzf --ansi --border --reverse --delimiter=: \
+        --preview 'bat --color always {1} -n  -H {2} -r {2}:+20') 
+        #--preview-window 'top,80%,border-bottom')
+
+        file=$(echo "$file_line" | gawk -F: '{print $1}')
+        line=$(echo "$file_line" | gawk -F: '{print $2}')
+    if [[ -n $file ]]; then
+        nvim +"$line" "$file"
+    fi
+
 }
 
 function fzheader
@@ -166,12 +148,101 @@ if [[ $# -gt 0 ]]; then
     if [[ -n $file ]]; then
         nvim +"$line" "$file"
     fi
+}
+
+function fzlinks
+{
+  cd ~/vimwiki || exit
+
+rg "\[\w+*\]\(\w+*\)" -w | awk -F"[" '{print "[" $2}' | awk '{print $1}'
 
 }
 
+function fzdeletefile
+{
+  #fzfiles now has delete capabilities
+  local file
+file="$(fd -t f -t --maxdepth 1 | fzf -m --bind ctrl-a:select-all,ctrl-d:deselect-all  --preview '[[ -r {} ]] && bat --style=numbers --color=always --line-range :500 {}')"
+  if [[ -n $file ]]
+    then 
+      gio trash ${file}
+    #  echo "${file}"
+  fi
+}
+
+
+function fzrenamefile
+{
+  file="$(fzf --preview='file {}')" #--bind='del:execute(rm -ri {})'
+    if [[ -n $file ]]
+    then
+      read -r -p "Enter then new name: " newName
+      mv -i "$file" "$newName" && echo Renamed "$file" to "$newName"
+  fi
+}
+
+function fzdeletefolder
+{
+  folder="$(find . -type d | fd -t d  --maxdepth 1 | fzf -m --preview='tree -C {} | head -n 50' \
+  --header='Enter y to delete')" #--bind='del:execute(rm -ri {})'
+    if [[ -n $folder ]]
+    then
+      gio trash "$folder" && echo "$folder" moved to trash.
+  fi
+}
+
+#alias btags='fzf -e --preview "bat --color=always --style=header,grid --line-range :500 {}"'
+
+function fzfolder
+{
+# Decided against showing files because of information overload
+  cd "$(find . -type d | fd -t d  --maxdepth 1| fzf --preview='tree -C {} | head -n 50')" || exit
+}
+
+function fzvids
+{
+cd /media/adrian/IT_ToolBox/FileCabinet || exit
+if [[ $# -gt 0 ]]; then
+    search_terms="$*"
+  fi
+
+  local video_file
+  if [[ $# -gt 0 ]]; then
+  video_file=$(find /media/adrian/IT_ToolBox/FileCabinet -type f \( -iname "*.mp4" -o -iname "*.mkv" -o -iname "*.avi" \) -exec ls {} + | 
+    grep -i "$search_terms" | fzf --preview 'sleep 1 > /dev/null 2>&1 & echo {}' --preview-window=up:50%:wrap)
+  else
+  video_file=$(find /media/adrian/IT_ToolBox/FileCabinet -type f \( -iname "*.mp4" -o -iname "*.mkv" -o -iname "*.avi" \) -exec ls {} + | 
+    fzf --preview 'sleep 1 > /dev/null 2>&1 & echo {}' --preview-window=up:50%:wrap)
+  fi
+
+  if [[ -n "$video_file" ]]; then
+    (vlc "$video_file" &) </dev/null &>/dev/null
+  fi
+}
+
+function fztabs
+{
+  #todo
+  # Currently searching by words only. Need to search by files
+cd vimwiki || exit
+
+  if [ "$#" -eq 0 ]; then read -r -p "Enter a word to search guitar tabs: " varWord; fi ;
+  if [ "$#" -gt 0 ]; then varWord="$*"; fi
+
+local file
+file=$(fzf --preview 'bat --style=numbers --color=always --line-range :500 {}') # &&  rg --colors 'match:bg:yellow' \
+#      --ignore-case --pretty --context 10 "$varWord")
+
+    if [[ -n $file ]]
+    then
+       vim -c "BTags" $file 
+    fi
+}
+
+
+
 function fztags
 {
-
   cd ~/vimwiki || exit
   if [ ! "$#" -gt 0 ]; then read -r -p "Enter a word to search VimWiki for tags: " varWord; fi ;
   if [ ! "$#" -eq 0 ]; then varWord=$1; fi
@@ -179,13 +250,11 @@ function fztags
 if [[ $# -gt 0 ]]; then
     varWord="$*"
   fi
-
   cd ~/vimwiki || exit
 
   if [ -z "$varWord" ]; then file_line=$(rg "\B^#\w+\b*$varWord*"  -i --no-ignore --no-heading --column --color ansi -g '*.md' |
   fzf --ansi --border --reverse --delimiter=: \
         --preview 'bat --color always {1} -n  -H {2} -r {2}:+20')
-
   else
 
 file_line=$(rg "^#\w+*$varWord*"  -i --no-ignore --no-heading --column --color ansi -g '*.md' |
@@ -199,12 +268,7 @@ fi
     if [[ -n $file ]]; then
         nvim +"$line" "$file"
     fi
-
 }
-
-
-
-
 
 function fztodo
 {
@@ -220,68 +284,6 @@ function fztodo
       vim "$file"
    fi
 }
-
-
-
-
-function fzfunction 
-{
-
-if [[ $# -gt 0 ]]; then
-    search_terms="$*"
-  else unset search_terms;
-  fi
-
- cd ~/bin || exit
- local file_line
- local file
- local line
- file_line=$(rg "^function *$search_terms*" -i --no-ignore --no-heading --column --color ansi -g \* | 
-        fzf --ansi --border --reverse --delimiter=: \
-        --preview 'bat --color always {1} -n  -H {2} -r {2}:+20') 
-        #--preview-window 'top,80%,border-bottom')
-
-        file=$(echo "$file_line" | gawk -F: '{print $1}')
-        line=$(echo "$file_line" | gawk -F: '{print $2}')
-    if [[ -n $file ]]; then
-        nvim +"$line" "$file"
-    fi
-
-}
-
-function fzmodule 
-{
-if [[ $# -gt 0 ]]; then
-    varWord="$*"
-  else unset varWord;
-  fi
-  cd ~/bin || exit
-unset file
-    #   fzf --preview="rg --ignore-case --pretty --context 10 \"$varWord\" {}" &&  rg --colors 'match:bg:yellow' \
-    #   --ignore-case --pretty --context 10 "$varWord")"
-
-# file_line=$(rg "$varWord" -i --no-ignore --no-heading --column --color ansi -g \* | 
-#        fzf --ansi --border --reverse --delimiter=: \
-#        --preview 'bat --color always {1} -n  -H {2} -r {2}:+20') 
-local file
-file=$(fzf --preview 'bat --style=numbers --color=always --line-range :500 {}') # &&  rg --colors 'match:bg:yellow' \
-#      --ignore-case --pretty --context 10 "$varWord")
-
-
-    if [[ -n $file ]]
-    then
-       vim -c "BTags" $file 
-    fi
-
-        # file=$(echo "$file_line" | gawk -F: '{print $1}')
-        # # line=$(echo "$file_line" | gawk -F: '{print $2}')
-    # if [[ -n $file ]]; then
-        # vim -c "BTags" "$file"
-    # fi
-
-}
-
-
 
 
 function fzpowershell
@@ -307,44 +309,28 @@ if [[ $# -gt 0 ]]; then
 
 }
 
-function fzword
-{
- # Searches current directory. Searches inside files for keyword. Lists files with preview
-  if [ ! "$#" -gt 0 ]; then read -r -p "Enter a word to search current directory: " varWord; fi ;
-  if [ ! "$#" -eq 0 ]; then varWord=$1; fi
- # if [ ! "$#" -gt 0 ]; then echo "Need a string to search for!"; return 1; fi
-  
-  local file
-    file="$(rg --max-count=1 --ignore-case --files-with-matches --no-messages "$varWord" | 
-      fzf --preview="rg --ignore-case --pretty --context 10 \"$varWord\" {}" )" #&&  
-#      rg --colors 'match:bg:yellow' --ignore-case --pretty --context 10 "$varWord")"
 
-   if [[ -n $file ]]
-   then
-      vim $file
-   fi
-}
-
-function fzbin
+function fzword   # This needs to be designed more like fzfunction
 {
-# Fzword in bin folder
-  cd ~/bin || exit
-  if [ ! "$#" -gt 0 ]; then read -r -p "Enter a word to search binaries: " varWord; fi ;
+  if [ ! "$#" -gt 0 ]; then read -r -p "Enter a word to search a word: " varWord; fi ;
   if [ ! "$#" -eq 0 ]; then varWord=$1; fi
 
+if [[ $# -gt 0 ]]; then
+    varWord="$*"
+  fi
 
-    local file
-    file="$(rg  --ignore-case --files-with-matches --no-messages "$varWord" | 
-#--max-count=1
-      fzf --preview-window=up:50%:wrap --preview="rg --ignore-case --pretty --context 10 \"$varWord\" {}"  )"
-          #&&  
-#      rg --colors 'match:bg:yellow' --ignore-case --pretty --context 10 "$varWord")"  
+ file_line=$(rg "$varWord"  -i --no-ignore --no-heading --column --color ansi  | 
+        fzf --ansi --border --reverse --delimiter=: \
+        --preview 'bat --color always {1} -n  -H {2} -r {2}:+20') 
+        #--preview-window 'top,80%,border-bottom')
 
-   if [[ -n $file ]]
-   then
-      vim "$file"
-   fi
+        file=$(echo "$file_line" | gawk -F: '{print $1}')
+        line=$(echo "$file_line" | gawk -F: '{print $2}')
+    if [[ -n $file ]]; then
+        nvim +"$line" "$file"
+    fi
 }
+
 
 
 function fzgbl
@@ -383,8 +369,6 @@ function fztest
 }
 
 
-
-
 function fzfilecabinet
 {
   cd /media/adrian/IT_ToolBox/FileCabinet || exit  
@@ -392,7 +376,6 @@ function fzfilecabinet
     fzf --preview="tree -L 2 {}" --bind="space:toggle-preview" )" &&
      echo "$PWD" && tree -L 2
 }
-
 
 
 function fzdocs
@@ -437,4 +420,5 @@ varWord="$2"
     # rg  --ignore-case --no-messages "$varWord" |
   # 			fzf --sort --preview="[[ ! -z {} ]] && rga --pretty --context 10 {q} {}" 
 }
+
 

@@ -48,6 +48,7 @@ function gethistory
 
 function topten 
 {
+# Gets top ten most command bash commands
         re='^[0-9]+$' 
         if ! [[ $1 =~ $re ]] ; then 
         echo "error: $1 not a number" >&2
