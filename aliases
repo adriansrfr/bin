@@ -136,7 +136,9 @@ function rebash
 }
 
 function bashkeybindings
-{  less ~/.bashrc | grep \"^[^;]\"  | grep -v keybindings | grep -i bind;}
+{
+  less ~/.bashrc | grep \"^[^;]\"  | grep -v keybindings | grep -i bind;
+}
  
 function jan
 { cal -m 01;}
