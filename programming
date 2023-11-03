@@ -42,7 +42,7 @@ function jsonArrayToTable(){
 function gethistory
 {
 # Returns last one hundred *unique* commands
-  history | awk '{a[$2]++}END{for(i in a){print a[i] " " i}}' |
+  history | awk '{a[$4]++}END{for(i in a){print a[i] " " i}}' |
     sort -rn | head -n 100
 }
 

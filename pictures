@@ -40,5 +40,23 @@ function editphotos
   geeqie </dev/null &>/dev/null & 
 }
 
+function getbackgrounds
+{
+  xdg-open '/home/adrian/.config/variety/Downloaded/Bing';
+}
 
+function getcurrentbackground
+{
 
+  background=$(cat .config/plasma-org.kde.plasma.desktop-appletsrc | grep -i Image=file: | awk -F"//" '{print $2}')
+
+  xdg-open "$background" </dev/null &>/dev/null &
+
+}
+
+function savecurrentbackground
+{
+  background=$(cat .config/plasma-org.kde.plasma.desktop-appletsrc | grep -i Image=file: | awk -F"//" '{print $2}')
+  mv $background $HOME/Backgrounds ;
+  echo moving $background to $HOME/Backgrounds;
+}

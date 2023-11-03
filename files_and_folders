@@ -1,6 +1,17 @@
 #!/bin/bash
 #todo get file permission in directory
 
+
+function getmodified
+{
+  # Gets file creation history in vimwiki
+  # #todo create similar command in vim
+  cd "$HOME/vimwiki" || exit
+  nvim "$(stat -c '%y %n' *.md | awk -F'[:| ]'  '{s = ""; for (i=6; i<= NF; i++) s= s $i ; print $1 " " $2 ":" $3 " " s}' | sort --reverse| fzf | awk -F' ' '{print $3}')"
+
+}
+
+
 function getpermissions
 {
 for filename in *
@@ -157,7 +168,7 @@ function dir
 }
 
 function testNote {
-notefilename="~/Documents/test.md"
+notefilename="$HOME/Documents/test.md"
 
 
 if [ ! -f $noteFilename ];

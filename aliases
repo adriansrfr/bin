@@ -1,5 +1,13 @@
 #!/bin/bash
 
+function projects
+{ cd '/home/adrian/Documents/Projects' || exit; } 
+
+function exercises
+{
+  cd "$HOME/Dropbox/vimwiki/Exercise" || echo Error!;
+}
+
 function vimtutor
 {
   nvim +Tutor ;
@@ -132,7 +140,7 @@ function bashrc
  
 function rebash
 {
- source ~/dotfiles/.bashrc && echo ".bashrc sourced!"
+ source $HOME/dotfiles/.bashrc && echo ".bashrc sourced!"
 }
 
 function bashkeybindings

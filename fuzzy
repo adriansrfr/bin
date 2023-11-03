@@ -39,6 +39,22 @@ file=$(rg -o '\[.*\]\(([^)]+)\)' "$1" "$input_file$extension" 2> /dev/null | sed
      fi
 }
 
+# file_line=$(rg "^(#+ )+[^#]*$varWord*"  -i --no-ignore --no-heading --column --color ansi -g '*.md' | 
+#        fzf --ansi --border --reverse --delimiter=: \
+#        --preview 'bat --color always {1} -n  -H {2} -r {2}:+20') 
+#        #--preview-window 'top,80%,border-bottom')
+#
+#        file=$(echo "$file_line" | gawk -F: '{print $1}')
+#        line=$(echo "$file_line" | gawk -F: '{print $2}')
+#    if [[ -n $file ]]; then
+#        nvim +"$line" "$file"
+#    fi
+
+
+
+
+
+
 function fzlinks1
 {
   cd ~/vimwiki || exit
@@ -79,6 +95,7 @@ function fztodo
 #       vim "$file"
 #    fi
 # }
+alias fbin=bfile
 
 function bfile
 {
@@ -106,7 +123,7 @@ file=$( find . -maxdepth 1 -type f -not -path '*/.*' -printf "%f\n" | sort | fzf
     # Updated files list to be sorted, brightened with ansi, added border
     # Updated naming convention for consistency and intuitiveness
   }
-
+alias wbin=bword
 function bword
 {
 # Fzword in bin folder
@@ -176,7 +193,7 @@ cd "$HOME/bin" || exit;
         nvim +"$line" "$file"
     fi
 }
-
+alias fwiki=wfile
 function wfile
 {
   # Used to be fzmodule and fbin

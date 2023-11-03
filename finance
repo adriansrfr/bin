@@ -12,12 +12,22 @@ powershell -c get-paydates
 
 }
 
+function get401k
+{
+  cd /home/adrian/Dropbox/vimwiki/Files || exit
+  powershell -c import-csv 401k.csv;
+}
+
 function getamortization
 {
   powershell -c get-amortization
 
 }
 
+function getamortization2
+{
+  powershell -c get-amortization2
+}
 
 function getbills
 {
