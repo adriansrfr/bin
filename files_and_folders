@@ -2,17 +2,93 @@
 #todo get file permission in directory
 
 
-function getmodified
-{
-  # Gets file creation history in vimwiki
-  # #todo create similar command in vim
-  cd "$HOME/vimwiki" || exit
-  nvim "$(stat -c '%y %n' *.md | awk -F'[:| ]'  '{s = ""; for (i=6; i<= NF; i++) s= s $i ; print $1 " " $2 ":" $3 " " s}' | sort --reverse| fzf | awk -F' ' '{print $3}')"
+  function FilesWithImages {
+    # Find and grep markdown files for image extensions anywhere
+    #markdown_files=$(find . -maxdepth 1 -name "*.md" -exec grep -lE "\.(jpg|jpeg|png)" {} + 2>/dev/null)
+    markdown_files=$(find . -maxdepth 1 -name "*.md" -exec grep -lE "\.(jpg|jpeg|png)" {} + 2>/dev/null | xargs -I % basename %) 
 
+  
+    # Print filenames with newlines using printf
+    file=$(printf "%s\n" "${markdown_files[@]}" | sort | fzf --ansi --border --reverse --preview  'bat --color always {}')
+    #'mdcat {}' 
+    if [[ -n "$file" ]]; then
+      nvim "$file"
+    fi
+  }
+
+
+function PdfCompress
+{
+if [ ! "$#" -gt 0 ]; then read -r -p "Enter the pdf to compress: " file; fi ;
+  if [ ! "$#" -eq 0 ]; then file=$1; fi
+  #gs -sDEVICE=pdfwrite -dCompatibilityLevel=1.4 -dDownsampleColorImages=true -dDownsampleGrayImages=true -dDownsampleMonoImages=true -dColorImageResolution=130 -dGrayImageResolution=130 -dMonoImageResolution=130 -r130 -dNOPAUSE  -dBATCH -sOutputFile=compressed.pdf $file &
+  gs -sDEVICE=pdfwrite -dPDFSETTINGS=/screen -dNOPAUSE -dBATCH -sOutputFile=compressed1.pdf $file &
+  #gs -sDEVICE=pdfwrite -dCompatibilityLevel=1.4 -dDownsampleColorImages=true -dColorImageResolution=150 -dNOPAUSE  -dBATCH -sOutputFile=compressed.pdf $file &
+  #gs -sDEVICE=pdfwrite -dCompatibilityLevel=1.4 -dPDFSETTINGS=/screen -dNOPAUSE -dQUIET -dBATCH -sOutputFile=compressed.pdf $file &
 }
 
+function FilesFunctions
+{
 
-function getpermissions
+if [ ! "$#" -gt 0 ]; then read -r -p "Enter the file to get functions: " file; fi ;
+  if [ ! "$#" -eq 0 ]; then file=$1; fi
+
+      vim -c "BTags" "$file"
+}
+
+function FilesReplaceWords {
+# multi-select with shift-tab
+# finds all files with word to replace and gives preview 
+    if [ "$#" -ne 2 ]; then
+        echo "Usage: WikiTodo <word_to_find> <replacement_word>"
+        return 1
+    fi
+
+    # Set the words for find and replace
+    find_word="$1"
+    replace_word="$2"
+
+    # Navigate to the vimwiki directory or exit if it doesn't exist
+    cd ~/Test || exit
+
+    # Search for the word and pipe the output to fzf for interactive selection
+    file_lines=$(rg "$find_word" -S --no-ignore --no-heading --column --color=ansi |
+        sort | fzf --ansi --border --reverse --delimiter=: \
+        --preview 'bat --color always {1} -n -H {2} -r {2}:+20' \
+        --multi)
+
+    # Loop through selected files
+    while IFS= read -r file_line; do
+        # Extract the file path and line number from the selected line
+        file=$(echo "$file_line" | awk -F: '{print $1}')
+        line=$(echo "$file_line" | awk -F: '{print $2}')
+
+        # Perform the replacement using sed if line is not empty
+        if [[ -n $file && -n $line ]]; then
+            # Perform the replacement using sed
+            sed -i "${line}s/$find_word/$replace_word/g" "$file"
+        fi
+    done <<< "$file_lines"
+   
+}
+
+# Check if both arguments are provided
+#    if [[ $# -eq 2 ]]; then
+#        # Both arguments are present, proceed with the replacement
+#        find . -type f -exec sed -i "s/$1/$2/g" {} +
+#    else
+#        # Prompt for missing arguments
+#        if [[ -z $1 ]]; then
+#            read -p "Enter the word to replace: " word1
+#        fi
+#        if [[ -z $2 ]]; then
+#            read -p "Enter the replacement word: " word2
+#        fi
+#
+#        # Execute the replacement with the provided or prompted values
+#        find . -type f -exec sed -i "s/$word1/$word2/g" {} +
+
+function FileGetPermissions
 {
 for filename in *
 do
@@ -22,93 +98,54 @@ do
 done
 }
 
-function underscore
+function FileEditReplaceSpaceWithUnderscore
 {
-  # Replaces files in directory with spaces with underscores
+  # Replaces file names in directory with spaces with underscores
   #todo add recursive option. See wiki to see how under "replace"
+  #todo add option to remove commas, semicolons
 for f in *\ *; do mv "$f" "${f// /_}"; done
 }
 
 
-function gettrash
+function TrashGet
 {
   trash-list | sort
 }
 
-function fzrecentfolders
+function FoldersGetRecent
 {
    cd "$( history | grep " cd " | fzf)" || exit
 }
 
-function getrecentfiles
-{
-  cd ~/vimwiki || exit
-powershell -c "Get-ChildItem -file | Select-Object Name, Size, LastWriteTime | Sort-Object LastWriteTime -Descending | Select-Object -First 20";
-}
-
-function emptytrash
+function TrashEmpty
 {
   trash-empty
 }
 
-function trash
+#todo add prompt if no argument
+function TrashPut
 {
-  trash-put 
+  trash-put "$1"
 }
 
-function restoretrash
+function TrashRestore
 {
 trash-restore
 }
 
-function getpowershell
+function Powershell
 {
   cd $HOME/.local/share/powershell/Modules || exit
 }
-
-function getorphanfiles
-{
-
-  cd ~/vimwiki || exit
-
-File_List="$(rg -Files --max-depth 1 | xargs -n 1 basename )" # Get all files in wiki
-
-for f in ${File_List}  
-do
-    filename="${f%%.*}" # Convert each file to its basename
-    results=$(rg -i "\($filename\)"  --no-heading) # Search each file for a basename link
-
-([ -z "$results" ] && echo -e "\e[31mNo links for ($filename)::($results)\e[0m") 
- unset results
-done
-}
-
-function getlink
+alias TerminalPowershell="Powershell"
+#todo add prompt to add argument
+function LinkSave
 {
 
 grep www -i "$1" | awk -F "URL=" '{print $2}' >> "$HOME//Documents//URLs.txt" && echo "$2" & echo "Sent to Documents//URLs.txt"
 }
 
-function getorphanlinks
-{
-  cd ~/vimwiki || exit
-
-File_List="$(rg -Files --max-depth 1 | xargs -n 1 basename )" # Get all files in wiki
-
-for f in ${File_List}  
-do
-    filename="${f%%.*}" # Convert each file to its basename
-
-    links=$(rg "$filename" | rg "\($filename\)")
-
-    results=$(rg -i "\($filename\)"  --no-heading)
-
-([ -z "$results" ] && echo -e "\e[31mNo links for ($filename)::($results)\e[0m") 
- unset results
-done
-}
-
-function prependfile
+function FilesPrepend
 {
 #todo add option to prompt 
 if [ ! "$#" -gt 0 ]; then read -r -p "Enter the term to prepend to all files: " prepend; fi ;
@@ -120,12 +157,12 @@ if [ ! "$#" -gt 0 ]; then read -r -p "Enter the term to prepend to all files: " 
 
 }
 
-function convertTxtToMd
+function FilesConvertTxtToMd
 {
 find . -iname "*.txt" -exec bash -c 'mv "$0" "${0%\.txt}.md"' {} \;
 }
 
-function removeprepend
+function FilesRemovePrepend
 {
 if [ ! "$#" -gt 0 ]; then read -r -p "Enter the term to remove prepend from all files: " removeprepend; fi ;
   if [ ! "$#" -eq 0 ]; then removeprepend=$1; fi
@@ -137,18 +174,23 @@ for file in *; do
   done
 }
 
-function getgitrepo
+function GitRepoGet
 {
   # curl https://api.github.com/users/adriansrfr/repos >> adriansrfr.json
 
-  #powershell -c "cat adriansrfr.json | convertfrom-json | select html_url,full_name,description,created_at,updated_at,git_url" ;
+  #powershell -c "cat adriansrfr.json | convertfrom-json | 
+  #select html_url,full_name,description,created_at,updated_at,git_url" ;
 
-  curl https://api.github.com/users/adriansrfr/repos -s | jq -r '(["REPO","DESCRIPTION","UPDATED","VISIBILITY"] | (., map(length*"-"))) , (.[] | [.full_name,.description,.updated_at,.visibility]) | @tsv' | column -ts $'\t'
+  curl https://api.github.com/users/adriansrfr/repos -s | 
+  jq -r '(["REPO","DESCRIPTION","UPDATED","VISIBILITY"] | 
+  (., map(length*"-"))) , (.[] | 
+  [.full_name,.description,.updated_at,.visibility]) |
+  @tsv' | column -ts $'\t'
 
 }
 
 
-function getpath
+function PathGet
 {
   echo "$PATH" | tr ':' '\n'
 }
@@ -156,30 +198,142 @@ function getpath
 
 
 function explorer 
-{ nemo "$PWD" </dev/null &>/dev/null & }
+{ (nemo "$PWD" &) &>/dev/null 2>&1 ; }
 
 
+function FolderCdFzExhaustive
+{
+  cd "$(find . -type d -print | fzf)" || return
+}
 
-
-
-function dir 
+#todo add option to add one or more folders as an argument
+function FolderStats
 {
   powershell -c "get-dir" 
 }
 
-function testNote {
-notefilename="$HOME/Documents/test.md"
+
+fzfm () {
+  # https://github.com/jdpedersen1/fzfm/blob/main/fzfm.sh
+  # --bind "left:pos(2)+accept" \
+  # --color=pointer:#a62b2b,spinner:#af5fff,prompt:#876253,header:#87afaf \
+  #  --pointer  \
+  while true; do
+    selection="$(ls -a -1 | fzf \
+      --bind "right:accept" \
+      --bind "shift-up:preview-up" \
+      --bind "shift-down:preview-down" \
+      --bind "ctrl-d:execute(bash -e ~/.local/fzfm/create_dir.sh)+reload(lsd -a -1)" \
+      --bind "ctrl-f:execute(bash -e ~/.local/fzfm/create_file.sh)+reload(lsd -a -1)" \
+      --bind "ctrl-t:execute(trash {})+reload(lsd -a -1)" \
+      --bind "ctrl-c:execute([ -d /tmp/copied ] || mkdir /tmp/copied && cp -r {} /tmp/copied/)" \
+      --bind "ctrl-g:execute(mv /tmp/copied/* .)+reload(lsd -a -1)" \
+      --bind "space:toggle" \
+      --color=fg:#d0d0d0,fg+:#d0d0d0,bg:#121212,bg+:#262626 \
+      --color=hl:#5f87af,hl+:#487caf,info:#afaf87,marker:#274a37 \
+      --height 95% \
+      --reverse \
+      --multi \
+      --info right \
+      --prompt "Search: " \
+      --border "bold" \
+      --border-label "$(pwd)/" \
+      --preview-window=right:65% \
+      --preview $cd_pre="cmd pwd'cmd {}'";
+          echo "Folder: $cd_pre";
+          ls -a --color=always "${cd_pre}";
+          cur_file="$(file {} | grep "[Tt]ext" | wc -l)";
+          if [[ "${cur_file}" -eq 1 ]]; then
+            bat --style=numbers --theme=ansi --color=always {} 2>/dev/null
+          else
+            chafa -c full --color-space rgb --dither none -p on -w 9 2>/dev/null {}
+            fi)"
+            if [[ -d ${selection} ]]; then
+              >/dev/null cd "${selection}" || echo 'error line 247' && return
+            elif [[ -f "${selection}" ]]; then
+              file_type=$(file -b --mime-type "${selection}" | cut -d'/' -f1)
+              case $file_type in
+                "text")
+                  nvim -u "$HOME/.config/nvim/init.lua" "${selection}"
+                  ;;
+                "image")
+                  for fType in ${selection}
+                  do 
+                    if [[ "${fType}" == *.xcf ]]; then
+                      gimp 2>/dev/null "${selection}"
+                    else
+                      sxiv "${selection}"
+                    fi
+                  done
+                  ;;
+                "video")
+                  mpv -fs "${selection}" > /dev/null
+                  ;;
+                "application")
+                  for fType in ${selection}
+                  do
+                    if [[ "${fType}" == *.docx ]] || [[ "${fType}" == *.odt ]]; then
+                      libreoffice "${selection}" > /dev/null
+                    elif [[ "${fType}" == *.pdf ]]; then
+                      zathura 2>/dev/null "${selection}"
+                    fi
+                  done
+                  ;;
+
+                "inode")
+                  nvim -u "$HOME/.config/nvim/init.lua" "${selection}"
+                  ;;
+              esac
+            else
+              break
+            fi
+          done
+        }
+               # clear
+               # fzfm
 
 
-if [ ! -f $noteFilename ];
-    then
-    echo "# Notes for $(date +%Y-%m-%d)" > $notefilename
-    fi
+
+#todo finish this function. See also wiki.vim NotesCreateWiki
+# function NoteTest 
+# {
+# 
+# if [ ! "$#" -gt 0 ]; then read -r -p "Enter the note name: " file; fi ;
+#   if [ ! "$#" -eq 0 ]; then file=$1; fi
+# 
+#   notefilename="$HOME/Documents/$(file).md"
+# 
+# 
+# if [ ! -f $noteFilename ];
+#     then
+#     echo "# Notes for $(date +%Y-%m-%d)" > $notefilename
+#     fi
+# 
+# 
+#     nvim -c "norm Go" \
+#     -c "norm Go## $(date +%H:%M)"\
+#     -c "norm G20" \
+#     -c "norm zz" \
+#     -c "startinsert" $notefilename
+# }
+# 
 
 
-    nvim -c "norm Go" \
-    -c "norm Go## $(date +%H:%M)"\
-    -c "norm G20" \
-    -c "norm zz" \
-    -c "startinsert" $notefilename
-}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

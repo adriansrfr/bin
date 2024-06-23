@@ -1,7 +1,7 @@
 #!/bin/bash
 
 
-function vimdoc 
+function DocumentOpenDocxWithVim
 {
 
   if [ ! "$#" -gt 0 ]; then read -p "Enter word document to open : " varWord; fi ;
@@ -9,7 +9,7 @@ function vimdoc
 
     local odt
     odt="$(ls -a | grep -i *.odt | grep -i "$varWord")"
-    if [ -z "{$odt}"  ]
+    if [ -z "$odt"  ]
     then
       echo "$varWord" is not found or not odt! ;
       return
@@ -22,7 +22,7 @@ function vimdoc
 
     local docx
     docx="$(ls -a | grep -i *.docx | grep -i "$varWord")"
-    if [ -z "{$docx}"  ]
+    if [ -z "$docx"  ]
     then
       echo "$varWord" is not found or not docx! ;
       return

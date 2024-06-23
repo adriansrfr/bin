@@ -1,0 +1,33 @@
+#!/bin/bash
+function WikiTodosArchive 
+{
+#todo
+  # add year to completed{year}.md
+  # update to apply to particular file and all files
+
+  # Define paths and criteria
+  todo_dir="$HOME/Dropbox/vimwiki"
+  #todo_file="Test_Todo.md"
+  year=$(date +%Y)
+  completed_file="$todo_dir/completed_$year.md" # Keeps accomplishments limited to year
+
+  cd "$todo_dir"
+
+for file in $todo_dir/*.md; do
+
+
+  result=$(sed -n '/- \[x\] /p' "$file") # Get complete task from file
+
+  if [[ -n $result ]]
+     then
+          echo "Processing file: $file"
+
+          file_name=$(basename "$file" .md)
+          echo [[$file_name]] $result >> "$completed_file" # Send completed task as link to $completed_file
+          sed -i '/- \[x\] /d' "$file" # Remove completed task from file
+     fi
+
+done
+
+}
+

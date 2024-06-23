@@ -1,0 +1,67 @@
+#!/bin/bash
+
+DataTypesMakeArray() {
+  # Initialize an empty array
+  local my_array=()
+
+  # Loop through all arguments and add them to the array
+  for arg in "$@"; do
+    my_array+=("$arg")
+  done
+
+  # Return the array
+  echo "${my_array[@]}"
+
+# Call the function and store the result in the variable "array"
+#array=($(makeArray a b c d e f g)) <-- Notice the double parenthesis
+
+# Access the first element of the array
+#echo "${array[0]}"
+
+# To get length of array:
+# echo ${#array[@]}
+}
+
+
+
+DataTypes_Make_Random_Array() {
+  local size=$1
+  local random_array=()
+
+  for ((i = 0; i < size; i++)); do
+    random_array+=($RANDOM)
+  done
+
+  echo "${random_array[@]}"
+# Usage:
+# array_size=10  # Change this to the desired array size
+# random_array=($(generate_random_array $array_size))
+# echo "Random array: ${random_array[@]}"
+}
+
+
+DataTypes_Bubble_Sort() {
+  local array=("$@")
+  local n=${#array[@]}
+  local swapped
+
+  for ((i = 0; i < n-1; i++)); do
+    swapped=false
+    for ((j = 0; j < n-i-1; j++)); do
+      if ((array[j] > array[j+1])); then
+        # Swap the elements
+        local temp=${array[j]}
+        array[j]=${array[j+1]}
+        array[j+1]=$temp
+        swapped=true
+      fi
+    done
+
+    # If no two elements were swapped in the inner loop, the array is already sorted.
+    if ! $swapped; then
+      break
+    fi
+  done
+
+  echo "${array[@]}"
+}

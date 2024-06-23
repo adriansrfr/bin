@@ -5,6 +5,25 @@ function getbackgroundlocation
   gsettings get org.gnome.desktop.background picture-uri;
 }
 
+function getbook
+{
+
+brave-browser "? -inurl:htm -inurl:html -inurl:php intitle:'index of' (pdf|epub) \"$1\""  </dev/null &>/dev/null &
+}
+
+function brave
+{
+  xdg-open brave-browser &>/dev/null &
+}
+
+function rebrave
+{
+  pkill brave & 
+  sleep 2
+  xdg-open brave-browser &>/dev/null &
+}
+
+
 alias getwallpaperlocation="getbackgroundlocation"
 
 function getwallpapers
@@ -69,7 +88,7 @@ function getfunction
 if [ ! "$#" -gt 0 ]; then read -r -p "Did you mean getfunctions? Enter a word to search bin for a function: " varWord; fi ;
   if [ ! "$#" -eq 0 ]; then varWord=$1; fi
   cd ~/bin/ || exit
-  a=$(grep -i ^function ~/bin/*  | awk '{print $2}' | grep -i "$varWord");
+  a=$(grep -R -i ^function ~/bin/*  | awk '{print $2}' | grep -i "$varWord");
   for word in $a; do echo "$word"; done;
 }
 

@@ -1,0 +1,11 @@
+#!/bin/bash
+
+function getbook
+{
+if [ ! "$#" -gt 0 ]; then read -r -p "Enter a word to search the web: " varWord; fi;
+  if [ ! "$#" -eq 0 ]; then varWord=$1; fi
+echo Processing "$varWord";
+brave-browser "https://www.google.com/search?q=-inurl:htm -inurl:html -inurl:php intitle:'index of' pdf|epub \"$varWord\" & " &>/dev/null 2>&1 ;
+
+}
+

@@ -1,5 +1,7 @@
 #!/bin/bash
 
+alias fzls=FolderFzCd
+
 function projects
 { cd '/home/adrian/Documents/Projects' || exit; } 
 
@@ -24,21 +26,14 @@ function vimtoc
   nvim +"help reference_toc | only";
 }
 
-function todo
-{
-  cd ~/vimwiki || exit
-  vim -c 'noautocmd vimgrep /#todo/j *.md | cope' 
-}
 
 function music
 {
   cd ~/Music || exit
-
 }
 
 
-
-function openpdf
+function PdfOpen
 {
  if [[ ! "$1" =~ \.pdf$ ]]; then
         echo "Error: The first argument is not a PDF file."
@@ -49,24 +44,11 @@ function openpdf
 
 }
 
-function index
+function WikiIndex
 {
 cd ~/vimwiki/ || exit ;
 nvim ~/vimwiki/100_Index.md ;
 }
-
-function wiki 
-{
-  cd ~/vimwiki/ || exit; 
-  nvim  ~/vimwiki/100_Index.md ;
-}
- 
-function vimwiki
- { cd ~/vimwiki || exit; 
-   nvim ~/vimwiki/100_Index.md;
- }
-
-
 
 
 function documents
@@ -104,16 +86,11 @@ function bin
 {
   cd ~/bin || exit; 
 }
- 
-
 
 function youtube
 {
   xdg-open youtube.com </dev/null &>/dev/null &
 }
-
- 
-
 
 function editor
 {
@@ -134,16 +111,22 @@ function vimrc
 {
   nvim ~/.vimrc;
 }
- 
+
+function tmuxrc
+{ nvim ~/.tmux.conf ; }
+
 function bashrc
 { nvim ~/.bashrc;}
- 
+
+function plugins
+{ cd ~/.config/nvim/Plugins ||  exit; }
+
 function rebash
 {
  source $HOME/dotfiles/.bashrc && echo ".bashrc sourced!"
 }
 
-function bashkeybindings
+function BashkeyBindings
 {
   less ~/.bashrc | grep \"^[^;]\"  | grep -v keybindings | grep -i bind;
 }

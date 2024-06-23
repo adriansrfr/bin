@@ -1,21 +1,21 @@
 #!/bin/bash
 
-function troubleshoot 
+function TroubleShootTroubleshooting 
 { xdg-open https://www.shellcheck.net/; }
 
 
 
 
-function where 
+function TroublshootWhere 
 {
   shopt -s extdebug ;
   declare -F "$1" ;
   # to turn off extdebug: 
   shopt -u extdebug ;
 }
+alias where=TroublshootWhere
 
-
-function getprocess
+function TroubleShootGetProcess
 { 
   if [ ! "$#" -gt 0 ]; then read -r -p "Enter a process to search: " var; fi ;
   if [ ! "$#" -eq 0 ]; then var=$1; fi
@@ -23,10 +23,12 @@ function getprocess
 
   ps aux | pgrep -i "$var" | pgrep -v grep; 
 }
+alias getprocess=TroubleshootGetProcess
 
-function getprocesses
+function TroubleShootGetProcesses
 {
 #todo check if btop exists
   btop ;
 }
+alias getprocesses=TroubleShootGetProcesses
 

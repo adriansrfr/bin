@@ -1,8 +1,16 @@
 #!/bin/bash
 
+function getmovie
+{
+
+if [ ! "$#" -gt 0 ]; then read -r -p "Enter the movie: " movie; fi ;
+  if [ ! "$#" -eq 0 ]; then movie=$1; fi
+
+brave-browser "www.google.com/search?q= -inurl:(htm|html|php) \+ 'parent directory' \+ description + size + (mp4|avi|mkv) + ${movie}"
+}
 
 
-function screensaver
+function PicturesScreensaver
 {
 xscreensaver -no-splash &
   xscreensaver-command -activate;
@@ -10,14 +18,14 @@ xscreensaver -no-splash &
 
 
 
-function wallpaper
+function PicturesWallpaper
 {
   find ~/.config/variety/Downloaded/Unsplash | fzf --preview="feh --bg-scale ~/.config/variety/Downloaded/Unsplash/{}" | 
     xargs -I {} feh --bg-scale ~/.config/variety/Downloaded/Unsplash/{}
 }
 
 
-function getTodaypictures
+function PicturesToday
 {
   # Gets pictures created today in Pictures folder
 cd ~/Pictures || exit

@@ -10,9 +10,38 @@
  	unset LF_TEMPDIR
 }
 
+session_name="Fresh"
+
+# 1. First you check if a tmux session exists with a given name.
+tmux has-session -t=$session_name 2> /dev/null
+
+# 2. Create the session if it doesn't exists.
+if [[ $? -ne 0 ]]; then
+  TMUX='' tmux new-session -d -s "$session_name"
+fi
+
+# 3. Attach if outside of tmux, switch if you're in tmux.
+if [[ -z "$TMUX" ]]; then
+  tmux attach -t "$session_name"
+else
+  tmux switch-client -t "$session_name"
+fi
+
+function StarshipThemes
+{
+case "$(printf "TokyoNight\nPastelPowerline\nGruvboxRainbow" | dmenu -l 3 -i -p "Themes:")" in
+  "TokyoNight")         (starship preset tokyo-night        -o ~/.config/starship.toml &) &>/dev/null 2>&1 ;;
+  "PastelPowerline")    (starship preset pastel-powerline   -o ~/.config/starship.toml &) &>/dev/null 2>&1 ;;
+  "GruvboxRainbow")     (starship preset gruvbox-rainbow    -o ~/.config/starship.toml &) &>/dev/null 2>&1 ;;
+  *) exit 1 ;;
+esac
+
+}
+
+
 function getinstalledprograms
 {
-    aptitude search '~i!~M' 
+    aptitude search '~i!~M' | fzf ;
 }
 
 function startdalai
@@ -39,7 +68,7 @@ function addnewsboaturl
   vim $HOME/snap/newsboat/6660/.newsboat/urls;
 }
 
-function startguake
+function TerminalGuake
 {
  (guake &) &>/dev/null 2>&1 
 }
@@ -59,7 +88,7 @@ function dropbox
   (flatpak run com.dropbox.Client &) &>/dev/null 2>&1
 }
 
-function zath
+function PdfZathura
  {
    zathura $1 -P $2
  }

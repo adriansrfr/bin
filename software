@@ -3,7 +3,7 @@ function getvoltaprograms
 {
  echo Get node, npm, or yarn programs installed with volta;
  echo Example software removal: volta uninstall terminalgpt;
- volta list;
+ volta list | fzf ;
 }
 
 function updatenpm
@@ -13,7 +13,7 @@ function updatenpm
  echo "volta install node@19" 
 }
 
-function getbravefavorites
+function BraveFavorites
 {
   bat ~/.config/BraveSoftware/Brave-Browser/Default/Bookmarks | jq .roots.bookmark_bar.children[] ;
 }

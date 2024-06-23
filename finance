@@ -1,48 +1,68 @@
 #!/bin/bash
 
-function getcrypto 
-{ 
-  sudo snap run cointop; 
+function finance
+{
+  cd  /media/adrian/IT_ToolBox/FileCabinet/Finance/Condo/House/Amortization &>/dev/null 2>&1  || exit
 }
 
-function getpaydates
+function FinanceCrypto 
+{
+  cd ~/vimwiki/Files || exit
+  powershell -c " import-csv crypto.csv | ft ; import-csv crypto.csv | 
+    Measure-Object -Property Value -Sum | select Sum | ft" ;
+}
+
+
+function FinancePayDates
 {
 
-powershell -c get-paydates
+powershell -c get-paydates ;
+# ~/.local/share/powershell/Modules
+# getpowershell
 
 }
+function FinanceIra
+{
+  cd /home/adrian/Dropbox/vimwiki/Files || exit 
+  powershell -c import-csv ira.csv ;
+}
 
-function get401k
+
+
+function Finance401k
 {
   cd /home/adrian/Dropbox/vimwiki/Files || exit
   powershell -c import-csv 401k.csv;
 }
 
-function getamortization
+function Finance401kOpen
+{ xdg-open /home/adrian/Dropbox/vimwiki/Files/401k.csv ; }
+
+function FinanceAmortization
 {
   powershell -c get-amortization
+  }
 
-}
+function FinanceAmortizationOpen
+{ (nemo "/media/adrian/IT_ToolBox/FileCabinet/Finance/Condo/House/Amortization" &) &>/dev/null 2>&1 ;}
 
-function getamortization2
-{
-  powershell -c get-amortization2
-}
 
-function getbills
+function FinanceBills
 {
 powershell -c get-bills
 
-# powershell -c "import-csv ~/vimwiki/Files/bills.csv | select-object Bill, @{Name='Amount';E={\"{0,10:F2}\" -f $_.Bill}}, Due, Interest, Notes, Previous| sort-object -Descending Due | ft -autosize"
+# powershell -c "import-csv ~/vimwiki/Files/bills.csv | 
+# select-object Bill, @{Name='Amount';E={\"{0,10:F2}\" -f $_.Bill}}, Due, Interest, Notes, Previous | 
+# sort-object -Descending Due | ft -autosize"
 }
 
-function openbills
+function FinanceBillsOpen
 {
   xdg-open ~/vimwiki/Files/bills.csv;
 }
-function updatebills
+function FinanceBillsUpdate
 {
   powershell -c "set-bills";
 }
 
-alias getpaycheck="getpaydates"
+alias FinancePaycheck="FinancePayDates"

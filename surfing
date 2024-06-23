@@ -1,35 +1,194 @@
 #!/bin/bash
 
+# Merely converts report to markdown. Step 2. So far this is manual.
+function convert_surf_report_to_markdown()
+{
+cd "$HOME/vimwiki/SurfReport" || echo error
+
+if ! [ -f marine_forecast_final.txt ]; then
+  format_weather_output1 ;
+fi
 
 
-function getweather
+if ! [ -f marine_forecast.md ]; then
+  python3 "ConvertSurfReportToMarkdown.py";
+fi
+
+mdDate=$(stat -c '%y' marine_forecast.md | awk '{print $1}')
+fileDate=$(stat -c '%y' marine_forecast_final.txt | awk '{print $1}')
+today=$(date +"%Y-%m-%d")
+
+if [[ ! "$fileDate" == "$today" ]]; then
+  rm -f  -- *.txt
+fi
+  if [[ ! "$mdDate" == "$today" ]]; then
+rm -f -- *.md
+  fi
+
+
+if ! [ -f marine_forecast.md ]; then
+  python3 "ConvertSurfReportToMarkdown.py";
+fi
+}
+
+
+function format_weather_output1()
+{
+cd "$HOME/vimwiki/SurfReport" || echo error
+   awk '/\$\$/ {if (!start) start=1; else exit} start' marine_forecast_full.txt > marine_forecast_cleaned.txt; 
+   tail -n +4 marine_forecast_cleaned.txt | sed '1i\.SYNOPSIS' > marine_forecast_final.txt | bat
+
+fileDate=$(stat -c '%y' marine_forecast_full.txt | awk '{print $1}')
+
+printf "\n.Created: %s" "$fileDate" >> marine_forecast_final.txt
+
+}
+
+# Creates forecast. Step 1
+function SurfMarineReport
+{
+
+if [ "$#" -eq 0 ]; then read -r -p "Enter the day of week, sun,mon,tue,wed,thu,fri,sat,all: " day; fi ;
+if [ "$#" -ne 0 ]; then day=$1 ; fi ;
+cd "$HOME/vimwiki/SurfReport" || echo error
+
+update_surf_report
+
+fileDate=$(stat -c '%y' marine_forecast_full.txt | awk '{print $1}')
+today=$(date +"%Y-%m-%d")
+clear
+if [[ "$fileDate" == "$today" ]]; then
+printf "\n\n"
+  choose_surf_day "$day"
+
+fi
+
+}
+# Updates only if file date does not equal today
+
+update_surf_report() 
+{
+
+cd "$HOME/vimwiki/SurfReport" || echo error
+  if ! [ -f marine_forecast_full.txt ]; then
+   python3 "surfTest.py"; # If surf report raw doesn't exist, create it.
+fi
+
+fileDate=$(stat -c '%y' marine_forecast_full.txt | awk '{print $1}')
+today=$(date +"%Y-%m-%d")
+clear
+
+# If raw surf report file date is not today then delete it
+    if [[ ! "$fileDate" == "$today" ]]; then
+      rm -f -- *.txt
+      python3 "surfTest.py"; # Rebuild surf report after deleting.
+
+fi
+
+    if ! [ -f marine_forecast_final.txt ]; then
+      format_weather_output1 ;
+    fi
+
+     convert_surf_report_to_markdown ;
+}
+
+# Run surf report daily
+update_surf_report
+
+
+choose_surf_day() 
+{
+cd "$HOME/vimwiki/SurfReport" || echo error
+
+# Check if final formatting done. If not then format.
+
+
+day=$1
+ cd "$HOME/vimwiki/SurfReport" || echo error
+    # Check if the day argument is provided
+    if [ -z "$day" ]; then
+        echo "Please provide a day of the week (e.g., sun,mon,tue,wed,thu,fri,sat,all)"
+        return 1
+    fi
+
+    # Convert the day to lower
+    day=$(echo "$day" | tr '[:upper:]' '[:lower:]')
+
+
+    # Extract information for the specified day from output.txt
+    case "$day" in
+        mon)
+            result=$(awk '/^\.MON /, /^\.TUE/ {if (!/^\.TUE|WED|THU|FRI|SAT|SUN/) print}' "marine_forecast_final.txt"); if [ -z "$result" ]; then 
+          echo "Monday not found."; else echo "$result"; fi
+            ;;
+        tue)
+            result=$(awk '/^\.TUE /, /^\.WED/ {if (!/^\.WED|THU|FRI|SAT|SUN|MON/) print}' "marine_forecast_final.txt"); if [ -z "$result" ]; then 
+          echo "Tuesday not found."; else echo "$result"; fi
+            ;;
+        wed)
+            result=$(awk '/^\.WED /, /^\.THU/ {if (!/^\.THU|FRI|SAT|SUN|MON|TUE/) print}' "marine_forecast_final.txt"); if [ -z "$result" ]; then 
+          echo "Wednesday not found."; else echo "$result"; fi
+            ;; 
+        thu)
+          result=$(awk '/^\.THU/, /^\.FRI/ {if (!/^\.FRI|SAT|SUN|MON|TUE|WED/) print}' 'marine_forecast_final.txt'); if [ -z "$result" ]; then 
+          echo "Thursday not found."; else echo "$result"; fi
+          ;;
+        fri)
+            result=$(awk '/^\.FRI/, /^\.SAT/ {if (!/^\.SAT|SUN|MON|TUE|WED|THU/) print}' "marine_forecast_final.txt"); if [ -z "$result" ]; then 
+          echo "Friday not found."; else echo "$result"; fi
+            ;;
+        sat)
+            result=$(awk '/^\.SAT/, /^\.SUN/ {if (!/^\.SUN|MON|TUE|WED|THU|FRI/) print}' "marine_forecast_final.txt"); if [ -z "$result" ]; then 
+          echo "Saturday not found."; else echo "$result"; fi
+            ;; 
+        sun)
+          result=$(awk '/^\.SUN/, /^\.MON/ {if (!/^\.MON|^\.TUE|^\.WED|^\.THU|^\.FRI|^\.SAT/) print}' "marine_forecast_final.txt"); if [ -z "$result" ]; then 
+          echo "Sunday not found."; else echo "$result"; fi
+          ;;
+        all) tail -n +4 marine_forecast_final.txt | bat ;;
+        *)
+            echo "Invalid day. Please provide a valid day of the week (e.g., Monday, Tuesday, etc.)"
+            return 1 ;;
+    esac
+}
+
+
+
+
+
+
+
+
+
+
+function SurfWeather
 {
   #rain
   xdg-open https://www.accuweather.com/en/us/lake-worth/33460/weather-radar/332279 </dev/null &>/dev/null &
 }
 
-function getrain
+function SurfRain
 {
 
   xdg-open https://www.windy.com/-Rain-thunder-rain?rain,25.971,-80.045,8,m:eo5adW0 </dev/null &>/dev/null &
 }
 
-function getswell
+function SurfSwell
 {
 xdg-open https://www.windy.com/-Waves-waves?waves,27.452,-78.802,8,m:eo5adW0 </dev/null &>/dev/null &
 }
 
-function surfline
+function Surfline
 {
-  xdg-open surfline.com </dev/null &>/dev/null &
+  brave-browser surfline.com </dev/null &>/dev/null &
 }
  
-function redreef
+function SurfRedReef
 {
-  xdg-open https://video-monitoring.com/beachcams/boca/ </dev/null &>/dev/null &   
+  brave-browser https://video-monitoring.com/beachcams/boca/ </dev/null &>/dev/null &   
 }
 
-function forecast
+function SurfForecast
 {
   brave-browser https://www.swellinfo.com/surf-forecast/palm-beach-florida https://www.surf-forecast.com/breaks/Boynton-Beach </dev/null &>/dev/null &
 }

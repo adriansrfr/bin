@@ -1,7 +1,7 @@
 #!/bin/bash
 
 
-function getterminalshortcuts
+function ShortcutsTerminal
 {
 echo "
 ctrl-( split right
@@ -10,8 +10,32 @@ ctrl-shift-left focus left
 ctrl-shift-right focus right
 "
 }
+alias TerminalShortcuts="ShortcutsTerminal"
 
-function keepassshortcuts
+function ShortcutsGuake
+{
+echo "
+ - Toggle Guake visibility:
+   F12
+
+ - Toggle fullscreen mode:
+   F11
+
+ - Open a new tab:
+   Ctrl+Shift+T
+
+ - Close the terminal:
+   Super+X
+
+ - Go to the previous tab:
+   Ctrl+PageUp
+
+ - Search the selected text in the browser:
+   Shift+Ctrl+L
+"
+}
+
+function ShortcutsKeepass
 {
   # https://keepass.info/help/kb/keyb_shortcuts.
 echo "
@@ -22,18 +46,8 @@ ctrl-v autotype
 ctrl-w close database" | dmenu -l 5;
 }
 
-function getshortcuts
-{
-  echo "getdwm
-windows
-brave
-cmd
-keepassshortcuts
-vimshortcuts"| dmenu -l 6;
 
-}
-
-function photoshortcuts
+function ShortcutsPhoto
 {
 echo "
 Rotate [,]
@@ -45,39 +59,20 @@ file:///usr/share/doc/geeqie/html/GuideReferenceKeyboardShortcuts.html
 "
 }
 
-function getvimhelp
+function HelpVim
 {
  vim /home/adrian/.vim/plugged/vimwiki/doc/vimwiki.txt;
 }
 
-function vimshortcuts
+function ShortcutsVim
 {
   echo "ctrl-t terminal
   getvimhelp" | dmenu -l 2;
 
 }
 
-function getfuzzycommands
-{
-  echo "
-fzbin:          fzword in bin folder
-fzcd:           List all directories with preview tree
-fzdocs:         fzcd for Documents folder
-fzfilecabinet:  fzcd for FileCabinet
-fzfiles:        List all files with preview
-fzfunction:     List all functions in bin folder
-fzgbl:          List all backlinks in wiki
-fzheader:       List all headers in wiki
-fzlinks:        List all links in wiki
-fzman:          Man pages with fuzzy search
-fzopen:         Navigate directory. Open with default program. ***Work in progress***
-fzpdf:          
 
-"
-
-}
-
-function brave
+function ShortcutsBrave
 {
 echo "
 Address bar      ctrl-e
@@ -89,10 +84,11 @@ Find next match  ctrl-g
 Scroll up        shift-space
 Scroll down      space
 Search bookmarks :b
-Search history   :h" | dmenu -l 7 ;
+Search history   :h" | dmenu -l 10 ;
 }
+alias BraveShortcuts=ShortcutsBrave
 
-function cmd
+function ShortcutsCmd
 {
 echo "Konsole
 Focus above        ctrl-shift-up
@@ -106,9 +102,10 @@ Split left/right   ctrl-(
 Split below        ctrl-)" | dmenu -l 10 ;
 }
 
-function windows
+function ShortcutsWindows
 {
 echo "Kwin
+
 meta-f Fullscreen
 meta-m Minimize
 meta-q Close
@@ -120,59 +117,86 @@ meta-ctrl-Left Window to Bottom Left
 meta-ctrl-Right Window to Bottom Right
 meta-shift-Left Window to top Left
 meta-shift-Right Window to top right
-meta-k switch to window above
-meta-j switch to window below
-meta-h switch to window left
-meta-l switch to window right
+meta-k focus to window above
+meta-j focus to window below
+meta-h focus to window left
+meta-l focus to window right
+ctrl-meta-h move window left
+ctrl-meta-j move window down
+ctrl-meta-k move window up
+ctrl-meta-l move window right
 Darkmode toggle mod-ctrl-d
 Rotate windows alt-tab
 Window overview mod-w
 Window menu alt-space" | dmenu -l 20;
 }
 
-function getdwm
+function ShortcutsDwm
 {
   echo "Alt+Shift+Enter - Launch xterm
-  Alt+Shift+C - Kill a client (a window, if you must insist)
-  Alt+t - Switch to tile layout
-  Alt+m - Switch to monocle layout
-  Alt+f - Switch to floating layout
-  Alt+b - Show/hide bar
-  Alt+p - Launch dmenu
-  Alt+j - Shift focus left
-  Alt+k - Shift focus right
-  Alt+Enter - Move focused window
-  Alt+h - Change ratio
-  Alt+l - Change ratio
-  Alt+[num] - Switch to tag [num]
-  Alt+Shift+Q - Quit dwm" | dmenu -l 14 ;
+  Alt+Shift+C   - Kill a client (a window, if you must insist)
+  Alt+Enter     - Rotate clients
+  Alt+M         - Monocle (Maximized) Window
+  Alt+t         - Tiled Window
+  Alt+f         - Floating Window
+  Alt+t         - Switch to tile layout
+  Alt+m         - Switch to monocle layout
+  Alt+f         - Switch to floating layout
+  Alt+b         - Show/hide bar
+  Alt+p         - Launch dmenu
+  Alt+j         - Shift focus left
+  Alt+k         - Shift focus right
+  Alt+Enter     - Move focused window
+  Alt+h         - Change ratio
+  Alt+l         - Change ratio
+  Alt+[num]     - Switch to tag [num]
+  Alt+Shift+Q   - Quit dwm" | dmenu -l 17 ;
 }
 
-function gettmuxshortcuts
+function ShortcutsTmux
 {
-  echo ctrl-b c create window
-  echo ctrl-b x close window
-  echo ctrl-b % vertical split
-  echo ctrl-b \" horizontal split
-  echo ctrl-b o swap panes
-}
+#vim -c BTags "$HOME/vimwiki/tmux.md"
 
-function keepassshortcuts
-{
-echo ctrl-b username
-echo ctrl-c password
-echo ctrl-u url
-echo ctrl-v autotype
+cd "$HOME/vimwiki/" || exit
 
+#  file_line=$(rg "^#" tmux.md -S --no-ignore --no-heading --column --color ansi  |\
+#        fzf --no-sort --ansi --border --delimiter=: \
+#        --preview 'bat --color always {} -n -H {3} -r {2}:+20') 
+#        #--preview-window 'top,80%,border-bottom')
+#
+#        file=$(echo "$file_line" | gawk -F: '{print $1}')
+#        line=$(echo "$file_line" | gawk -F: '{print $2}')
+#    if [[ -n $file ]]; then
+#        nvim +"$line" "$file"
+#    fi
+
+ file_line=$(rg "^(#+ )+[^#]*" 'tmux.md' -H -i --no-heading --no-ignore --column --color ansi | 
+        fzf --ansi --border --reverse  --delimiter=: \
+        --preview 'bat --color always {1} -n -H {2} -r {2}:+20')
+         # {1} -n  -H {2} -r {2}:+20') 
+        #--preview-window 'top,80%,border-bottom')
+
+        file=$(echo "$file_line" | gawk -F: '{print $1}')
+        line=$(echo "$file_line" | gawk -F: '{print $2}')
+    if [[ -n $file ]]; then
+        nvim +"$line" "$file"
+    fi
+
+
+
+#  echo ctrl-b x close window
+#  echo ctrl-b % vertical split
+#  echo ctrl-b \" horizontal split
+#  echo ctrl-b o swap panes
 }
+alias TmuxNotes=ShortcutsTmux
 
 function wiki
 {
  cd ~/vimwiki || exit
-  vim "./100_Index.md" ;
 }
 
-function gethelp
+function HelpIdeas
 {
   echo shellcheck # name of script
   echo howdoi;
@@ -182,38 +206,31 @@ function gethelp
   echo getshortcuts;
 }
 
-function getkeybinding
-{
-echo  C-f: fzword;
-echo  C-e: fzfolder;
-echo  C-n: nvim;
-# echo  C-i: wiki index;
-echo  C-b: search command modules; 
-echo  C-w: search wiki by word;
-}
+function ShortcutsBashKeybinding
+{ echo empty for now; }
 
 
-function getbashshortcut 
+function ShortcutsBash
 {
   xdg-open https://ss64.com/bash/syntax-keyboard.html
 }
 
-function getvimleaders
+function ShortcutsLeadersVim
 {
   grep leader ~/.vimrc | grep -vE '^"'                                                                    
 }
 
-function getbashcommands
+function ShortcutsBashCommands
 {
   grep -i bind ~/.bashrc ;
 }
 
-function getcheat
+function ShortcutsCheatSheet
 { 
   curl cheat.sh/"$1"; 
 }
 
-function getbashaliases
+function ShortcutsAliasesBashrc
 {
   grep -i alias ~/.bashrc ;
 }

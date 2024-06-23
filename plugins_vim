@@ -1,0 +1,62 @@
+#!/bin/bash
+
+function VimBin
+{
+  cd ~/.config/nvim/Plugins || exit
+    vim bin.vim
+}
+
+
+function VimExperimental
+{
+  cd ~/.config/nvim/Plugins || exit
+    vim experimental.vim
+}
+
+
+function VimFilesAndFolders
+{
+  cd ~/.config/nvim/Plugins || exit
+    vim files_and_folders.vim
+}
+
+function VimFunctions
+{
+  cd ~/.config/nvim/Plugins || exit
+    vim functions.vim
+}
+
+
+function VimFuzzy
+{
+  cd ~/.config/nvim/Plugins || exit
+    vim fuzzy.vim
+}
+
+
+function VimMappings
+{
+  cd ~/.config/nvim/Plugins || exit
+    vim mappings.vim
+}
+
+
+function VimOptions
+{
+  cd ~/.config/nvim/Plugins || exit
+    vim options.vim
+}
+
+
+function VimPlugins
+{
+  cd ~/.config/nvim/Plugins || exit
+    vim Plugins.vim
+}
+
+
+function VimWiki
+{
+  cd ~/.config/nvim/Plugins || exit
+    vim wiki.vim
+}

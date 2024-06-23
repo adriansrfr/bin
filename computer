@@ -1,11 +1,56 @@
 #!/bin/bash
 
-function getbios
+
+function AndroidConnect
+{
+  ssh -p '8022' '192.168.1.71'
+}
+
+function AndroidTest
+{
+  case $OSTYPE in
+    linux-android) echo "This is android!"
+      ;;
+    linux-gnu) echo "This is desktop!"
+      ;;
+    *) echo "This is unknown!"
+    ;;
+esac
+}
+
+function screensaver
+{
+
+if ps -eo command | pgrep -x 'xscreensaver'; then
+    echo "xscreensaver is running"
+
+  xscreensaver-command -activate & 
+else
+    echo "xscreensaver is not running"
+    xscreensaver && sleep 1 &&  xscreensaver-command -activate & xscreensaver  
+fi
+}
+
+function ComputerBios
 {
   sudo dmidecode -t bios -q;
 }
 
-function getterminal
+function TerminalGet
+{
+#todo test for if neofetch installed
+cyan="\033[1;34m" 
+result=$(neofetch | grep Term| grep -iv font ) ;
+echo "$result"
+
+}
+
+function ComputerBios
+{
+  sudo dmidecode -t bios -q;
+}
+
+function TerminalGet
 {
 #todo test for if neofetch installed
 cyan="\033[1;34m" 
@@ -13,12 +58,15 @@ result=$(neofetch | grep Term| grep -iv font | awk  -F\: '{print $2 }')
 printf "${cyan}Terminal: $result\n"
 }
 
-function getwindowmgr
+function ComputerEnvironment
+{ npx envinfo ; }
+
+function ComputerWindowmgr
 {
   wmctrl -m | grep --color=always Name:;
 }
 
-function getcomputer
+function ComputerGet
 {
 #todo test for if neofetch installed
 neofetch; }
@@ -26,15 +74,15 @@ neofetch; }
 # neofetch; consider switching to freshfetch. Also screenfetch is installed.
 # ~/.config/neofetch/config.conf
 
-function getpath
+function PathGet
 { echo "${PATH//:/$'\n'}"; }
 
-function getdiskspace
+function ComputerDiskspace
 {
   ncdu;
 }
 
-function getram
+function ComputerRam
 {
 free -h;
 echo "";
@@ -49,12 +97,12 @@ function hibernate
 sudo  pm-suspend;
 }
 
-function getcpu
+function ComputerCpu
 {
   lscpu | grep -E 'Model name|Socket|Thread|NUMA|CPU\(s\)';
 }
 
-function getsettings
+function ComputerSettings
 {
   systemsettings </dev/null &>/dev/null &
 }
@@ -69,7 +117,7 @@ echo Updating,upgrading,autoremoving, and cleaning;
  echo Done!!!
 }
 
-function gethd 
+function ComputerHd 
 {
  # sudo df -h | grep -Eiv '(tmpfs|udev|loop)' 2>/dev/null ;
  #tee >(head -n 1) >(sleep 0.5;
@@ -81,7 +129,7 @@ function gethd
 
 }
 
-function getusb
+function ComputerUsb
 {
  # lsblk --help
  #df -h | ( read -r head; printf '%s\n' "$head"; grep --color=always -i multiboot);
@@ -90,19 +138,23 @@ function getusb
 }
 
 
-function getrunningprograms
+function ComputerProgramsRunning
 {
   ps -eo comm | sort -u
 }
 
-
-function getinstalledprograms
+function ComputerProgramKill
 {
-  dpkg -l | awk -F ' ' '{$1=$3=$4=""; print $0}'| sed 's/ //' | awk 'sub(" ", "\t")' | column -t -s "$(printf '\t')";
+
+   kill -9 $(pidof "$1")  ;
+}
+function ComputerProgramsInstalled
+{
+  dpkg -l | awk -F ' ' '{$1=$3=$4=""; print $0}'| sed 's/ //' | awk 'sub(" ", "\t")' | column -t -s "$(printf '\t')" | fzf;
 }
 
 
-function upgradepip
+function PythonUpgradePip
 {
   python3 -m pip install --upgrade pip
 }
