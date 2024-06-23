@@ -13,6 +13,11 @@ BLACK='\033[0;30m'
 WHITE='\033[0;30;47m'
 RED='\033[0;41m'
 
+function Github
+{
+  cd ~/vimwiki || exit ;
+  nvim ~/vimwiki/Git_steps.md
+}
 
 function BashShowColors
 {
