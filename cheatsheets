@@ -1,0 +1,52 @@
+#!/bin/bash
+function cheatsheet {
+
+if [ $# -eq 2 ]; then
+    language="$1"
+    core_util="$2"
+  fi;
+
+if [ $# -eq 0 ]; then
+
+  language=$(echo "bash lua powershell javascript golang rust markdown css html" | tr ' ' '\n' | fzf)
+
+  if [ -z "${language}" ]; then 
+  read -r -p "Enter a language: " language ; 
+  fi ;
+
+  core_util=$(echo "map glob slice tr xargs find mv sed" | tr ' ' '\n' | fzf) ;
+  if [ -z "${core_util}" ]; then 
+    read -r -p "Enter a core_util: " core_util; 
+  fi ;
+
+fi;
+
+#tmux neww bash -c "curl cht.sh/$language/$core_util & while [ : ]; do sleep 1; done;"
+
+if [[ $language && $core_util ]]; then
+ tmux neww bash -c "curl cht.sh/$language/$core_util & while [ : ]; do sleep 1; done;" 
+else
+ tmux neww bash -c "curl cht.sh/$language~$core_util"
+ fi
+
+}
+
+function cheat
+{
+if [ $# -eq 1 ]; then
+    varWord="$1"
+  fi;
+  if [ ! "$#" -gt 0 ]; then read -r -p "Enter a word to search cheat: " varWord; fi ;
+sed -n "/## $varWord/I,/## /{s/^## Heading .*//;p;}" "$HOME/vimwiki/cheat.md" | sed '$d' | bat -l markdown || 
+sed -n "/## $varWord/I,/## /{s/^## Heading .*//;p;}" "$HOME/vimwiki/cheat.md" | sed '$d' | cat 
+
+}
+
+function cheatopen
+{
+  cd "$HOME/vimwiki/" || exit ;
+  vim "./cheat.md"
+  cd - || exit
+}
+
+

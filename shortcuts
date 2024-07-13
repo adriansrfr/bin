@@ -170,8 +170,8 @@ cd "$HOME/vimwiki/" || exit
 #        nvim +"$line" "$file"
 #    fi
 
- file_line=$(rg "^(#+ )+[^#]*" 'tmux.md' -H -i --no-heading --no-ignore --column --color ansi | 
-        fzf --ansi --border --reverse  --delimiter=: \
+ file_line=$(rg "^(##+ )+[^##]*" 'tmux.md' -H -i --no-heading --no-ignore --column --color ansi | 
+        fzf --ansi --border --border-label 'TmuxNotes' --reverse  --delimiter=: \
         --preview 'bat --color always {1} -n -H {2} -r {2}:+20')
          # {1} -n  -H {2} -r {2}:+20') 
         #--preview-window 'top,80%,border-bottom')
@@ -223,11 +223,6 @@ function ShortcutsLeadersVim
 function ShortcutsBashCommands
 {
   grep -i bind ~/.bashrc ;
-}
-
-function ShortcutsCheatSheet
-{ 
-  curl cheat.sh/"$1"; 
 }
 
 function ShortcutsAliasesBashrc

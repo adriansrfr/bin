@@ -1,6 +1,24 @@
 #!/bin/bash
 
-alias fzls=FolderFzCd
+function dotfiles
+{
+    cd "$HOME/dotfiles" || exit;
+}
+
+function temp
+{
+    cd "$HOME/temp" || exit ; 
+}
+
+function conf
+{
+  cd "$HOME/.config" || exit ;
+}
+
+function adrian
+{
+  cd '/mnt/c/users/Adrian' || exit;
+}
 
 function projects
 { cd '/home/adrian/Documents/Projects' || exit; } 
@@ -26,12 +44,10 @@ function vimtoc
   nvim +"help reference_toc | only";
 }
 
-
 function music
 {
-  cd ~/Music || exit
+  cd "$HOME/Music" || exit
 }
-
 
 function PdfOpen
 {
@@ -41,7 +57,6 @@ function PdfOpen
     fi
 
     (~/Applications/pdf/Sioyek-x86_64.AppImage "$1" &) &>/dev/null 2>&1 
-
 }
 
 function WikiIndex
@@ -49,7 +64,6 @@ function WikiIndex
 cd ~/vimwiki/ || exit ;
 nvim ~/vimwiki/100_Index.md ;
 }
-
 
 function documents
 { 
@@ -69,7 +83,6 @@ function cgrep
 {
   grep --color=always; 
 }
- 
  
 function cls
 {
@@ -113,7 +126,39 @@ function vimrc
 }
 
 function tmuxrc
-{ nvim ~/.tmux.conf ; }
+{ nvim ~/.config/tmux/tmux.conf ; }
+
+function tmuxstart
+{
+if [[ $# -eq 0 ]]; then
+  result="$(sesh list | fzf)" ;
+  sesh connect $result
+else
+  result="$HOME/$1"
+  sesh connect "$result"
+fi
+tmux attach-session # "$result"
+tmux attach
+}
+
+ tm() {
+   [[ -n "$TMUX" ]] && change="switch-client" || change="attach-session"
+   if [ "$1" ]; then 
+      tmux "$change" -t "$1" 2>/dev/null || (tmux new-session -d -s "$1" && tmux "$change" -t "$1"); return
+   fi
+   session=$(tmux list-sessions -F "#{session_name}" 2>/dev/null | fzf --exit-0) &&  tmux $change -t "$session" || echo "No sessions found." & result="$(sesh list | fzf)" ;
+  sesh connect "$result"
+ }
+
+
+#tmuxstart() {
+
+#name=${PWD##*/}
+#    tmux ls | grep "$name" && { tmux a -t "$name"; return 0; }
+#    #rest of tmux script to create session named "sess"
+#    tmux a -t "$name"
+#}
+
 
 function bashrc
 { nvim ~/.bashrc;}
@@ -123,7 +168,7 @@ function plugins
 
 function rebash
 {
- source $HOME/dotfiles/.bashrc && echo ".bashrc sourced!"
+ source "$HOME/dotfiles/.bashrc" && echo ".bashrc sourced!"
 }
 
 function BashkeyBindings

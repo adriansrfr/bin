@@ -93,7 +93,7 @@ fi
 }
 
 # Run surf report daily
-update_surf_report
+#update_surf_report
 
 
 choose_surf_day() 

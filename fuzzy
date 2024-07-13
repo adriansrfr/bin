@@ -1,30 +1,4 @@
 #!/bin/bash
-#todo: add headers, keybindings, preview label, refresh, sort alphabetically or in order
-# https://thevaluable.dev/practical-guide-fzf-example/
-#
-# commands needed:
-# bfile
-# bword
-# bheader
-#
-# wfile
-# wword
-# wheader
-# 
-# fzfile
-# fzword
-
-# file_line=$(rg "^(#+ )+[^#]*$varWord*"  -i --no-ignore --no-heading --column --color ansi -g '*.md' | 
-#        fzf --ansi --border --reverse --delimiter=: \
-#        --preview 'bat --color always {1} -n  -H {2} -r {2}:+20') 
-#        #--preview-window 'top,80%,border-bottom')
-#
-#        file=$(echo "$file_line" | gawk -F: '{print $1}')
-#        line=$(echo "$file_line" | gawk -F: '{print $2}')
-#    if [[ -n $file ]]; then
-#        nvim +"$line" "$file"
-#    fi
-
 
 function ManArgFzf
 {
@@ -39,6 +13,22 @@ function ManArgFzf
       man "$1" | grep -- "$2" || echo "$2 not found"; fi
 }
 
+function DotTodo
+{
+  cd ~/dotfiles|| exit
+  varWord=#todo
+
+  file_line=$(rg "^$varWord|^\" $varWord|^#$varWord"  -i --no-ignore --no-heading --column --color ansi --hidden |
+    fzf --ansi --border --reverse --delimiter=: \
+    --preview 'bat --color always {1} -n  -H {2} -r {2}:+20')
+      #--preview-window 'top,80%,border-bottom')
+
+      file=$(echo "$file_line" | gawk -F: '{print $1}')
+      line=$(echo "$file_line" | gawk -F: '{print $2}')
+      if [[ -n $file ]]; then
+        nvim +"$line" "$file"
+      fi
+}
 
 
 function BinTodo
@@ -98,14 +88,20 @@ function FilesLinesFz
           fi
 }
 
-
-
-
-
-
-
 function FunctionGet
-{ declare -f "$1" | bat -l bash || exit; }
+{
+  if [[ $# -eq 0 ]]; then
+  func=$(declare -F | fzf) ;
+  $func | bat -l bash;
+  fi;
+
+  if [[ $# -eq 1 ]]; then
+#  read -r -p "Enter a word to search a word: " varWord; 
+  func=$(ag "$1" | awk 'NR==1{print $2}')
+  declare -f "$func" | bat -l bash;
+ fi ;
+
+}
 alias getdefinition=FunctionGet
 
 function FunctionWhere
@@ -143,24 +139,30 @@ function BinFiles
 
 function FilesRecentModified
 {
-  unset file
-  local file
-  file=$( find . -maxdepth 1 -type f -not -path '*/.*' -daystart \
-    -mtime -7 -printf "%TY-%Tm-%Td %TH:%TM %f \n" | sort --reverse |  
-    fzf --header 'Files Modifed Last 7 Days' --with-nth=1..3 --ansi --border \
-    --preview "bat --style=numbers --color=always --line-range :500 ${3}" | 
-    awk "{print $3}") 
-      # &&  rg --colors 'match:bg:yellow' \
-      # echo $file
-      #      --ignore-case --pretty --context 10 "$varWord")
-      #%TY-%Tm-%Td %TH:%TM\n
-      if [[ -n $file ]]
-      then
-        vim -c "BTags" "$file"
-      fi
-      # Updated files list to be sorted, brightened with ansi, added border
-      # Updated naming convention for consistency and intuitiveness
+  nvim "$(stat -c '%y %n' * | awk -F'[:| ]'  '{s = ""; for (i=6; i<= NF; i++) s= s $i ; print $1 " " $2 ":" $3 " " s}' | sort --reverse| fzf --preview "bat --color=always {3}" --preview-window 'right,60%,border-bottom' | awk -F' ' '{print $3}')"
 }
+
+
+# function FilesRecentModified_old
+# {
+#   unset file
+#   local file
+#   file=$( find . -maxdepth 1 -type f -not -path '*/.*' -daystart \
+#     -mtime -7 -printf "%TY-%Tm-%Td %TH:%TM %f \n" | sort --reverse |  
+#     fzf --header 'Files Modifed Last 7 Days' --with-nth=1..3 --ansi --border \
+#     --preview "bat --style=numbers --color=always --line-range :500 ${3}" | 
+#     awk "{print $3}") 
+#       # &&  rg --colors 'match:bg:yellow' \
+#       # echo $file
+#       #      --ignore-case --pretty --context 10 "$varWord")
+#       #%TY-%Tm-%Td %TH:%TM\n
+#       if [[ -n $file ]]
+#       then
+#         vim -c "BTags" "$file"
+#       fi
+#       # Updated files list to be sorted, brightened with ansi, added border
+#       # Updated naming convention for consistency and intuitiveness
+# }
 
 function FilesRecentCreated
 {
@@ -200,7 +202,7 @@ function FileLines
     fi
 
     file_line=$(rg "$varWord" -S --no-ignore --no-heading --column --color ansi | 
-      sort | fzf --no-sort --ansi --border --delimiter=: \
+      fzf --no-sort --ansi --border --delimiter=: \
       --preview 'bat --color always {1} -n -H {2} -r {2}:+20') 
           #--preview-window 'top,80%,border-bottom')
 
@@ -552,4 +554,29 @@ pdfgrep -i -C 10 "$varWord" ./"$arg1" | fzf --preview="rg --ignore-case --pretty
 
 
 
+
+# https://thevaluable.dev/practical-guide-fzf-example/
+#
+# commands needed:
+# bfile
+# bword
+# bheader
+#
+# wfile
+# wword
+# wheader
+# 
+# fzfile
+# fzword
+
+# file_line=$(rg "^(#+ )+[^#]*$varWord*"  -i --no-ignore --no-heading --column --color ansi -g '*.md' | 
+#        fzf --ansi --border --reverse --delimiter=: \
+#        --preview 'bat --color always {1} -n  -H {2} -r {2}:+20') 
+#        #--preview-window 'top,80%,border-bottom')
+#
+#        file=$(echo "$file_line" | gawk -F: '{print $1}')
+#        line=$(echo "$file_line" | gawk -F: '{print $2}')
+#    if [[ -n $file ]]; then
+#        nvim +"$line" "$file"
+#    fi
 

@@ -221,7 +221,7 @@ function ProgrammingGetHistory
 }
 alias gethistory=ProgrammingGetHistory
 
-function ProgrammingTopTen 
+function HistoryTopTen
 {
 # Gets top ten most command bash commands
         re='^[0-9]+$' 

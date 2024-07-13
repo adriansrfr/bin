@@ -27,8 +27,7 @@ alias getprocess=TroubleshootGetProcess
 
 function TroubleShootGetProcesses
 {
-#todo check if btop exists
-  btop ;
+ btop || (command -v btop >/dev/null 2>&1 || { echo >&2 "Btop required but not installed. Aborting."; exit 1; })
 }
 alias getprocesses=TroubleShootGetProcesses
 

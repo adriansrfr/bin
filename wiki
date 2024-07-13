@@ -1,24 +1,16 @@
 #!/bin/bash
 
-#todo include date in search like WikiFilesModified
-function WikiFilesCreationFind
-{
-exa -U --sort=created   | fzf --preview 'bat --color=always {}' --preview-window=right:wrap --phony --bind="change:reload:rg --files --no-ignore --hidden --follow --format=none --sort path --glob '!.git/*'" | xargs -r nvim -p
-}
+#function WikiFilesCreationFind
+#{
+##todo include date in search like WikiFilesModified
+#  exa -u --sort=created   | fzf --preview 'bat --color=always {}' --preview-window=right:wrap --phony --bind="change:reload:rg --files --no-ignore --hidden --follow --format=none --sort path --glob '!.git/*'" | xargs -r nvim -p
+#}
+#--preview-window 'top,80%,border-bottom')
 
 function WikiFilesModified
 {
-  # Gets file creation history in vimwiki
-  # #todo create similar command in vim
   cd "$HOME/vimwiki" || exit
-  nvim "$(stat -c '%y %n' *.md | awk -F'[:| ]'  '{s = ""; for (i=6; i<= NF; i++) s= s $i ; print $1 " " $2 ":" $3 " " s}' | sort --reverse| fzf --preview "bat --color=always {3}" | awk -F' ' '{print $3}')"
-
-}
-
-function WikiFilesRecent
-{
-  cd ~/vimwiki || exit
-powershell -c "Get-ChildItem -file | Select-Object Name, Size, LastWriteTime | Sort-Object LastWriteTime -Descending | Select-Object -First 20";
+nvim "$(stat -c '%y %n' *.md | awk -F'[:| ]'  '{s = ""; for (i=6; i<= NF; i++) s= s $i ; print $1 " " $2 ":" $3 " " s}' | sort --reverse| fzf --preview "bat --color=always {3}" --preview-window 'right,60%,border-bottom' | awk -F' ' '{print $3}')"
 }
 
 
@@ -29,17 +21,17 @@ function WikiNoteCreate
   local full_path="$static_path$file_name.md"
 
   if [ -e "$full_path" ]; then
-    echo "File exists: $full_path"
+    echo "file exists: $full_path"
     vim "$full_path"
   else
-    echo "File does not exist: $full_path"
+    echo "file does not exist: $full_path"
     touch "$full_path";
     vim "$full_path";
   fi
 }
 
 
-function WikiBackup
+function WikiGoogleBackup
 {
 rclone copy ~/vimwiki Google: --progress && echo Backup from local to Google completed! ;
 sleep 5 ;
@@ -51,10 +43,10 @@ rclone copy Google: ~/vimwiki --progress && echo Backup from Google to local com
 function WikiTodo
 {
 cd ~/vimwiki || exit
-  varWord=#todo
+#  varword=#todo
 
- file_line=$(rg "^$varWord"  -i --no-ignore --no-heading --column --color ansi  |
-        fzf --ansi --border --reverse --delimiter=: \
+ file_line=$(rg "^#todo"  -i --no-ignore --no-heading --column --color ansi  |
+        fzf --ansi --border --border-label 'WikiTodos' --reverse --delimiter=: \
         --preview 'bat --color always {1} -n  -H {2} -r {2}:+20')
         #--preview-window 'top,80%,border-bottom')
 
@@ -64,7 +56,7 @@ cd ~/vimwiki || exit
         nvim +"$line" "$file"
     fi
 }
-alias TodoWiki=WikiTodo
+alias todowiki=WikiTodo
 
 function WikiLinksFz {
 if [[ $# -eq 0 ]]; then 
@@ -97,78 +89,69 @@ rg "\[\w+*\]\(\w+*\)" -w | awk -F"[" '{print "[" $2}' | awk '{print $1}'
 
 }
 
-# function fztodo
-#  {
-#   cd ~/vimwiki || exit
-#   varWord=#todo
-#     local file
-#     file="$(rg --max-count=1 --ignore-case --files-with-matches --no-messages "$varWord" |
-#       fzf --preview="rg --ignore-case --pretty --context 10 \"$varWord\" {}" &&  rg --colors 'match:bg:yellow' \
-#       --ignore-case --pretty --context 10 "$varWord")"
-
-#    if [[ -n $file ]]
-#    then
-#       vim "$file"
-#    fi
-#  }
-
-# function fztodo
-# {
-#   cd ~/vimwiki || exit
-#   varWord=#todo
-#     local file
-#     file="$(rg --max-count=1 --ignore-case --files-with-matches --no-messages "$varWord" |
-#       fzf --preview="rg --ignore-case --pretty --context 10 \"$varWord\" {}" &&  rg --colors 'match:bg:yellow' \
-#       --ignore-case --pretty --context 10 "$varWord")"
-# 
-#    if [[ -n $file ]]
-#    then
-#       vim "$file"
-#    fi
-# }
-
 function WikiLines
-  {
-#todo create nonrecursive option
-#todo create exact word search
-# Formerly fzwikiword
-    cd ~/vimwiki || exit
-
+{
+  cd $HOME/vimwiki || exit;
+  # Searches all lines in current directory
   if [ ! "$#" -gt 0 ]; then read -r -p "Enter a word to search: " varWord; fi ;
-  if [ ! "$#" -eq 0 ]; then varWord=$1; fi
+    if [ ! "$#" -eq 0 ]; then varWord=$1; fi
 
-if [[ $# -gt 0 ]]; then
-    varWord="$*"
-  fi
-
-    file_line=$(rg "$varWord" -S --no-ignore --no-heading --column --color ansi  | sort |
-      fzf --no-sort --ansi --border --delimiter=: \
-        --preview 'bat --color always {1} -n -H {2} -r {2}:+20') 
-
-        file=$(echo "$file_line" | gawk -F: '{print $1}')
-        line=$(echo "$file_line" | gawk -F: '{print $2}')
-    if [[ -n $file ]]; then
-        nvim +"$line" "$file"
+    if [[ $# -gt 0 ]]; then
+      varWord="$*"
     fi
+
+    file_line=$(rg "$varWord" -S --no-ignore --no-heading --column --color ansi | 
+      fzf --no-sort --ansi --border --border-label 'WikiLines' --delimiter=: \
+      --preview 'bat --color always {1} -n -H {2} -r {2}:+20') 
+          #--preview-window 'top,80%,border-bottom')
+
+          file=$(echo "$file_line" | gawk -F: '{print $1}')
+          line=$(echo "$file_line" | gawk -F: '{print $2}')
+          if [[ -n $file ]]; then
+            nvim +"$line" "$file"
+          fi
+
 }
+
+
+# function WikiLines_old
+#   {
+# # for exact word search use single quotes 'cat'
+#     cd ~/vimwiki || exit
+
+#   if [ ! "$#" -gt 0 ]; then read -r -p "Enter a word to search: " varWord; fi ;
+#   if [ ! "$#" -eq 0 ]; then varWord=$1; fi
+
+# if [[ $# -gt 0 ]]; then
+#     varword="$*"
+#   fi
+
+#  file_line=$(rg "$varWord" -S --no-ignore --no-heading --column --color ansi  |
+#       fzf --no-sort --ansi --border --border-label 'WikiLines' --delimiter=: \
+#         --preview 'bat --color always {1} -n -H {2} -r {2}:+20') 
+
+#         file=$(echo "$file_line" | gawk -F: '{print $1}')
+#         line=$(echo "$file_line" | gawk -F: '{print $2}')
+#     if [[ -n $file ]]; then
+#         nvim +"$line" "$file"
+#     fi
+# }
 
 
 function WikiLinesNonRecursive
   {
-#todo create nonrecursive option
-#todo create exact word search
-# Formerly fzwikiword
+# for exact word search use single quotes 'cat'
     cd ~/vimwiki || exit
 
   if [ ! "$#" -gt 0 ]; then read -r -p "Enter a word to search: " varWord; fi ;
   if [ ! "$#" -eq 0 ]; then varWord=$1; fi
 
 if [[ $# -gt 0 ]]; then
-    varWord="$*"
+    varword="$*"
   fi
 
-    file_line=$(rg "$varWord" --max-depth 1 -S --no-ignore --no-heading --column --color ansi  | sort |
-      fzf --no-sort --ansi --border --delimiter=: \
+    file_line=$(rg "$varWord" --max-depth 1 -S --no-ignore --no-heading --column --color ansi  |
+      fzf --no-sort --ansi --border --border-label 'WikiLinesNonRecursive' --delimiter=: \
         --preview 'bat --color always {1} -n -H {2} -r {2}:+20') 
 
         file=$(echo "$file_line" | gawk -F: '{print $1}')
@@ -181,18 +164,18 @@ if [[ $# -gt 0 ]]; then
 function WikiLinesNonRecursiveExact
   {
 # requires argument to have quotes
-# Formerly fzwikiword
+# formerly fzwikiword
     cd ~/vimwiki || exit
 
   if [ ! "$#" -gt 0 ]; then read -r -p "Enter a word to search: " varWord; fi ;
   if [ ! "$#" -eq 0 ]; then varWord=$1; fi
 
 if [[ $# -gt 0 ]]; then
-    varWord="$*"
+    varword="$*"
   fi
 
-    file_line=$(rg "$varWord" --max-depth 1 -F -S --no-ignore --no-heading --column --color ansi  | sort |
-      fzf --no-sort --ansi --border --delimiter=: \
+    file_line=$(rg "$varWord" --max-depth 1 -F -S --no-ignore --no-heading --column --color ansi  |
+      fzf --no-sort --ansi --border --border-label 'WikiLinesNonRecursiveExact'  --delimiter=: \
         --preview 'bat --color always {1} -n -H {2} -r {2}:+20') 
 
         file=$(echo "$file_line" | gawk -F: '{print $1}')
@@ -203,53 +186,56 @@ if [[ $# -gt 0 ]]; then
 }
 function WikiFiles
 {
-  # Used to be fzmodule and fbin
-if [[ $# -gt 0 ]]; then
-    varWord="$*"
-  else unset varWord;
-  fi
-  cd ~/vimwiki || exit
-unset file
+  if [ ! "$#" -gt 0 ]; then read -r -p "Enter a word to search: " varWord; fi ;
+  if [ ! "$#" -eq 0 ]; then varWord=$1; fi
 
+if [[ $# -gt 0 ]]; then
+    varword="$*"
+  fi
+
+cd ~/vimwiki || exit
+
+
+echo "$varWord"
+read -p "Press enter to continue"
+
+unset file
+unset file1
 if [[ -n "$varWord" ]]; then
-  vim "${varWord}"
+file1=$(find "$varWord" -maxdepth 1 -type f -not -path '*/.md' )
+echo "Find found $file1"
+read -p "Press enter to continue"
+fi
+if [[ -n "$file1" ]]; then
+  vim "$file1"
   return
 fi
-
+# find . -maxdepth 1 -type f -not -path '*/.*' -printf "%f\n" 
 local file
-file=$( find . -maxdepth 1 -type f -not -path '*/.*' -printf "%f\n" | sort | fzf --no-sort --ansi --border --preview 'bat --style=numbers --color=always --line-range :500 {}' | sort) # &&  rg --colors 'match:bg:yellow' \
-#      --ignore-case --pretty --context 10 "$varWord")
+file=$( fdfind -d 1 | fzf --ansi --border --border-label 'WikiFiles' --preview 'bat --style=numbers --color=always --line-range :500 {}' )
 
-    if [[ -n $file ]]
-    then
-       vim -c "BTags" $file 
+if [[ -n $file ]]; then
+       vim -c "BTags" "$file" 
     fi
-    # Updated files list to be sorted, brightened with ansi, added border
-    # Updated naming convention for consistency and intuitiveness
-  }
+}
 
 function WikiDailyNotes
 {
-  #cd ~/vimwiki/DailyNotes || exit
-  #vim -c "Files" 
-  
   cd "$HOME/vimwiki/DailyNotes" || exit
-  nvim "$(stat -c "%n" *.md |  sort --reverse| fzf --no-sort --ansi --border --preview 'bat --style=numbers --color=always --line-range :500 {}')" 
+  nvim "$(stat -c "%n" ./*.md |  sort --reverse| fzf --no-sort --ansi --border --border-label 'WikiDailyNotes' --preview 'bat --style=numbers --color=always --line-range :500 {}')" 
 }
 
 function WikiDailyNotesLines
 {
-# Fzword in bin folder
-# Used to be fzbin
   if [ ! "$#" -gt 0 ]; then read -r -p "Enter a word to search Exercise: " varWord; fi ;
   if [ ! "$#" -eq 0 ]; then varWord=$1; fi
 
 if [[ $# -gt 0 ]]; then
-    varWord="$*"
+    varword="$*"
   fi
 cd ~/vimwiki/DailyNotes || exit
  file_line=$(rg "$varWord" -S --no-ignore --no-heading --column --color ansi  | sort --reverse |
-        fzf --no-sort --ansi --border --delimiter=: \
+        fzf --no-sort --ansi --border --border-label 'WikiDailyNotesLines' --delimiter=: \
         --preview 'bat --color always {1} -n -H {2} -r {2}:+20')
         #--preview-window 'top,80%,border-bottom')
 
@@ -260,30 +246,30 @@ cd ~/vimwiki/DailyNotes || exit
     fi
 
 }
-alias DailyNotesLines=WikiDailyNotesLines
+alias dailyNotesLines=WikiDailyNotesLines
 
 function WikiExercise
 {
   
   cd "$HOME/vimwiki/Exercise" || exit
-  nvim "$(stat -c "%n" *.md |  sort --reverse| fzf --no-sort --ansi --border --preview 'bat --style=numbers --color=always --line-range :500 {}')" 
+  nvim "$(stat -c "%n" ./*.md |  sort --reverse| fzf --no-sort --ansi --border --border-label 'WikiExercise' --preview 'bat --style=numbers --color=always --line-range :500 {}')" 
 }
 
 
 function WikiHeader
 {
-# Searches vimwiki headers
+# searches vimwiki headers
   cd ~/vimwiki || exit
   if [ ! "$#" -gt 0 ]; then read -r -p "Enter a word to search VimWiki: " varWord; fi ;
   if [ ! "$#" -eq 0 ]; then varWord=$1; fi
 
 if [[ $# -gt 0 ]]; then
-    varWord="$*"
+    varword="$*"
   fi
 
  cd ~/vimwiki || exit
  file_line=$(rg "^(#+ )+[^#]*$varWord*"  -i --no-ignore --no-heading --column --color ansi -g '*.md' | 
-        fzf --ansi --border --reverse --delimiter=: \
+        fzf --ansi --border --border-label 'WikiHeader' --reverse --delimiter=: \
         --preview 'bat --color always {1} -n  -H {2} -r {2}:+20') 
         #--preview-window 'top,80%,border-bottom')
 
@@ -296,8 +282,8 @@ if [[ $# -gt 0 ]]; then
 
 function WikiExerciseLines
 {
-# Fzword in bin folder
-# Used to be fzbin
+# fzword in bin folder
+# used to be fzbin
   if [ ! "$#" -gt 0 ]; then read -r -p "Enter a word to search Exercise: " varWord; fi ;
   if [ ! "$#" -eq 0 ]; then varWord=$1; fi
 
@@ -306,7 +292,7 @@ if [[ $# -gt 0 ]]; then
   fi
 cd ~/vimwiki/Exercise || exit
  file_line=$(rg "$varWord" -S --no-ignore --no-heading --column --color ansi  | sort --reverse |
-        fzf --no-sort --ansi --border --delimiter=: \
+        fzf --no-sort --ansi --border --border-label 'WikiExerciseLines' --delimiter=: \
         --preview 'bat --color always {1} -n -H {2} -r {2}:+20')
         #--preview-window 'top,80%,border-bottom')
 
@@ -317,7 +303,7 @@ cd ~/vimwiki/Exercise || exit
     fi
 
 }
-alias ExerciseLines=WikiExerciseLines
+alias exerciseLines=WikiExerciseLines
 
 
 
@@ -334,7 +320,7 @@ if [[ $# -gt 0 ]]; then
   cd ~/vimwiki || exit
 
   if [ -z "$varWord" ]; then file_line=$(rg "\B^#\w+\b*$varWord*"  -i --no-ignore --no-heading --column --color ansi -g '*.md' |
-  fzf --ansi --border --reverse --delimiter=: \
+  fzf --ansi --border --border-label 'WikiHeadersFz' --reverse --delimiter=: \
         --preview 'bat --color always {1} -n  -H {2} -r {2}:+20')
   else
 
@@ -352,15 +338,11 @@ fi
 }
 
 
-
-
-
-
 function WikiBacklinksFz
 {
 # fuzzy get back links
   cd ~/vimwiki || exit
-  # Searches current directory. Searches inside files for keyword. Lists files with preview
+  # searches current directory. Searches inside files for keyword. Lists files with preview
   if [ ! "$#" -gt 0 ]; then read -r -p "Enter a word to get backlinks: " varWord; fi ;
   if [ ! "$#" -eq 0 ]; then varWord=$1; fi
 
@@ -404,10 +386,63 @@ do
 
     links=$(rg "$filename" | rg "\($filename\)")
 
-    results=$(rg -i "\($filename\)"  --no-heading)
+    results=$(rg -i "\($links\)"  --no-heading)
 
 ([ -z "$results" ] && echo -e "\e[31mNo links for ($filename)::($results)\e[0m") 
  unset results
 done
 }
+
+# function fztodo
+#  {
+#   cd ~/vimwiki || exit
+#   varword=#todo
+#     local file
+#     file="$(rg --max-count=1 --ignore-case --files-with-matches --no-messages "$varWord" |
+#       fzf --preview="rg --ignore-case --pretty --context 10 \"$varWord\" {}" &&  rg --colors 'match:bg:yellow' \
+#       --ignore-case --pretty --context 10 "$varWord")"
+
+#    if [[ -n $file ]]
+#    then
+#       vim "$file"
+#    fi
+#  }
+
+# function fztodo
+# {
+#   cd ~/vimwiki || exit
+#   varword=#todo
+#     local file
+#     file="$(rg --max-count=1 --ignore-case --files-with-matches --no-messages "$varWord" |
+#       fzf --preview="rg --ignore-case --pretty --context 10 \"$varWord\" {}" &&  rg --colors 'match:bg:yellow' \
+#       --ignore-case --pretty --context 10 "$varWord")"
+# 
+#    if [[ -n $file ]]
+#    then
+#       vim "$file"
+#    fi
+# }
+
+# function WikiFilesCreated
+# {
+#   # Creation date does not exist
+#   # gets file creation history in vimwiki
+#   # #todo create similar command in vim
+#   cd "$HOME/vimwiki" || exit
+#   nvim "$(stat -c '%y %n' *.md | awk -F'[:| ]'  '{s = ""; for (i=6; i<= NF; i++) s= s $i ; print $1 " " $2 ":" $3 " " s}' | sort --reverse| fzf --preview "bat --color=always {3}" --preview-window 'right,60%,border-bottom' | awk -F' ' '{print $3}')"
+# }
+
+# function WikiFilesRecent_old
+# {
+#   cd ~/vimwiki || exit
+# powershell -c "Get-ChildItem -file | Select-Object Name, Size, LastWriteTime | Sort-Object LastWriteTime -Descending | Select-Object -First 20";
+# }
+
+# function WikiFilesRecent
+# {
+#   # Not useful because backups overwrite the recently accessed property
+#   # This would be useful for files not on constant backup
+#   cd "$HOME/vimwiki" || exit
+# nvim "$(stat -c '%x %n' *.md | awk -F'[:| ]'  '{s = ""; for (i=6; i<= NF; i++) s= s $i ; print $1 " " $2 ":" $3 " " s}' | sort --reverse| fzf --preview "bat --color=always {3}" --preview-window 'right,60%,border-bottom' | awk -F' ' '{print $3}')"
+# }
 

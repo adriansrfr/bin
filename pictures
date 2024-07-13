@@ -36,8 +36,8 @@ function photos
 
 function PicturesEdit
 {
-#todo check if geeqie installed
-  cd ~/Pictures || exit
+ (command -v geeqie >/dev/null 2>&1 || { echo >&2 "Geeqie required but not installed. Aborting."; exit 1; })
+cd ~/Pictures || exit
   geeqie </dev/null &>/dev/null & 
 }
 

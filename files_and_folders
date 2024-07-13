@@ -1,6 +1,9 @@
 #!/bin/bash
-#todo get file permission in directory
 
+function FilesHidden 
+{
+  ls -a | grep "^\." || exit ;
+}
 
   function FilesWithImages {
     # Find and grep markdown files for image extensions anywhere
@@ -72,21 +75,6 @@ function FilesReplaceWords {
    
 }
 
-# Check if both arguments are provided
-#    if [[ $# -eq 2 ]]; then
-#        # Both arguments are present, proceed with the replacement
-#        find . -type f -exec sed -i "s/$1/$2/g" {} +
-#    else
-#        # Prompt for missing arguments
-#        if [[ -z $1 ]]; then
-#            read -p "Enter the word to replace: " word1
-#        fi
-#        if [[ -z $2 ]]; then
-#            read -p "Enter the replacement word: " word2
-#        fi
-#
-#        # Execute the replacement with the provided or prompted values
-#        find . -type f -exec sed -i "s/$word1/$word2/g" {} +
 
 function FileGetPermissions
 {
@@ -122,10 +110,11 @@ function TrashEmpty
   trash-empty
 }
 
-#todo add prompt if no argument
 function TrashPut
 {
-  trash-put "$1"
+if [ "$#" -eq 0 ]; then read -r -p "Enter the file to delete: " file; fi ;
+  if [ "$#" -gt 0 ]; then file=$1; fi
+  trash-put "$file"
 }
 
 function TrashRestore
@@ -135,19 +124,19 @@ trash-restore
 
 function Powershell
 {
-  cd $HOME/.local/share/powershell/Modules || exit
+  cd "$HOME/.local/share/powershell/Modules" || exit
 }
 alias TerminalPowershell="Powershell"
-#todo add prompt to add argument
+
 function LinkSave
 {
-
-grep www -i "$1" | awk -F "URL=" '{print $2}' >> "$HOME//Documents//URLs.txt" && echo "$2" & echo "Sent to Documents//URLs.txt"
+if [ "$#" -eq 0 ]; then read -r -p "Enter the link to save: " link; fi ;
+  if [ "$#" -gt 0 ]; then link=$1; fi
+grep www -i "$link" | awk -F "URL=" '{print $2}' >> "$HOME//Documents//URLs.txt" && echo "$2" & echo "Sent to Documents//URLs.txt"
 }
 
 function FilesPrepend
 {
-#todo add option to prompt 
 if [ ! "$#" -gt 0 ]; then read -r -p "Enter the term to prepend to all files: " prepend; fi ;
   if [ ! "$#" -eq 0 ]; then prepend=$1; fi
 
@@ -318,22 +307,18 @@ fzfm () {
 # }
 # 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+# Check if both arguments are provided
+#    if [[ $# -eq 2 ]]; then
+#        # Both arguments are present, proceed with the replacement
+#        find . -type f -exec sed -i "s/$1/$2/g" {} +
+#    else
+#        # Prompt for missing arguments
+#        if [[ -z $1 ]]; then
+#            read -p "Enter the word to replace: " word1
+#        fi
+#        if [[ -z $2 ]]; then
+#            read -p "Enter the replacement word: " word2
+#        fi
+#
+#        # Execute the replacement with the provided or prompted values
+#        find . -type f -exec sed -i "s/$word1/$word2/g" {} +
